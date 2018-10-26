@@ -6,7 +6,7 @@
 /*   By: gvirga <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/02 13:14:43 by gvirga            #+#    #+#             */
-/*   Updated: 2018/10/26 18:05:10 by gvirga           ###   ########.fr       */
+/*   Updated: 2018/10/26 21:22:44 by gvirga           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ int		main(void)
 	void	*mlx_win;
 	int		x = -1;
 	int		y = -1;
-	char	*line;
+	char	line[BUFF_SIZE + 1];
 	int		fd;
 	char 	**map;
 	int		**map_final;
@@ -44,6 +44,7 @@ int		main(void)
 	int		ret;
 	char	*str;
 	char	*tmp;
+	char	**tmp1;
 	// Etape 1 Verification du fichier
 	if (!(mlx_ptr = mlx_init()))
 		return (-1);
@@ -52,32 +53,31 @@ int		main(void)
 	nb_line = 0;
 	str = ft_strnew(0);
 	fd = open("./maps/basictest.fdf", O_RDONLY);
-	while ((ret = get_next_line(fd, &line)) > 0)
+	while ((ret = read(fd, line, BUFF_SIZE)) > 0)
 	{
-		nb_line++;
+		line[ret] = '\0';
 		tmp = str;
-		str = ft_strjoin_free(tmp, line, 3);
-		line = NULL;
+		str = ft_strjoin_free(tmp, line, 1);
 	}
 	close(fd);
+	nb_line = ft_wordcount(str, '\n');
 	if (ret == -1)
 		return (-1);
 	//Etape 2 Transformation de la map en int
-	if (!(map_final = (int**)malloc(sizeof(**map_final) * nb_line)))
+	if (!(map_final = (int**)malloc(sizeof(int*) * nb_line)))
 		return (-1);
-	len_line = ft_wordcount(str, ' ') / nb_line;
+	len_line = ft_wordcount2(str, ' ', '\n') / nb_line;
 	i = 0;
 	x = 0;
 	while (i < nb_line)
 	{
 		int y = 0;
-		if (!(numbers_of_current_line = ft_strsplit(str, ' ')))
+		if (!(numbers_of_current_line = ft_strsplit2(str, ' ', '\n')))
 				return (-1);
-		if (!(map_final[i] = (int*)malloc(sizeof(*map_final) * len_line)))
+		if (!(map_final[i] = (int*)malloc(sizeof(int) * len_line)))
 			return (-1);
 		while (y < len_line && numbers_of_current_line[x])
 		{
-			printf("numbers_of_current_line: %s\n", numbers_of_current_line[x]);
 			map_final[i][y] = ft_atoi(numbers_of_current_line[x]);
 			y++;
 			x++;

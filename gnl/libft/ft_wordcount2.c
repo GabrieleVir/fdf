@@ -1,18 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_wordcount.c                                     :+:      :+:    :+:   */
+/*   ft_wordcount2.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: gvirga <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2018/06/23 21:58:07 by gvirga            #+#    #+#             */
-/*   Updated: 2018/10/26 20:33:40 by gvirga           ###   ########.fr       */
+/*   Created: 2018/10/26 20:33:26 by gvirga            #+#    #+#             */
+/*   Updated: 2018/10/26 20:33:34 by gvirga           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-size_t	ft_wordcount(char *str, char c)
+size_t	ft_wordcount2(char *str, char c, char c1)
 {
 	size_t		i;
 	size_t		k;
@@ -21,10 +21,10 @@ size_t	ft_wordcount(char *str, char c)
 	k = 0;
 	while (str[i] != '\0')
 	{
-		if (str[i] != c)
+		if (str[i] != c && str[i] != c1)
 		{
 			k++;
-			while (str[i] != c && str[i] != '\0')
+			while (str[i] != c && str[i] != '\0' && str[i] != c1)
 				i++;
 		}
 		else

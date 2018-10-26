@@ -6,7 +6,7 @@
 /*   By: gvirga <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/06/15 17:48:52 by gvirga            #+#    #+#             */
-/*   Updated: 2018/10/25 05:24:33 by gvirga           ###   ########.fr       */
+/*   Updated: 2018/10/26 20:34:11 by gvirga           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,6 +76,7 @@ char				*ft_strjoin_free(char const *s1, char const *s2, int c);
 char				*ft_strnjoin(char const *s1, char const *s2, size_t len);
 char				*ft_strtrim(char const *s);
 char				**ft_strsplit(char const *s, char c);
+char				**ft_strsplit2(char const *s, char c, char c1);
 char				*ft_strdup(const char *s1);
 t_list				*ft_lstnew(void const *content, size_t content_size);
 void				ft_lstdelone(t_list **alst, void (*del)(void *, size_t));
@@ -86,6 +87,7 @@ t_list				*ft_lstmap(t_list *lst, t_list *(*f)(t_list *elem));
 void				*ft_memccpy(void *dst, const void *src, int c, size_t n);
 t_list				*ft_lstcpy(t_list *list);
 size_t				ft_wordcount(char *str, char c);
+size_t				ft_wordcount2(char *str, char c, char c1);
 long long int		ft_atol(const char *str);
 void				push_back(t_list **head, void *content);
 size_t				ft_strchri(const char *s, int c);
