@@ -6,13 +6,14 @@
 /*   By: gvirga <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/02 13:14:43 by gvirga            #+#    #+#             */
-/*   Updated: 2018/10/26 21:22:44 by gvirga           ###   ########.fr       */
+/*   Updated: 2018/10/26 22:31:28 by gvirga           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "fdf.h"
 #include "./gnl/get_next_line.h"
 #include <stdio.h>
+#include <math.h>
 
 /*
 ** Two gnl for : 
@@ -95,34 +96,46 @@ int		main(void)
 		}
 		ft_putchar('\n');
 	}
-
+	
 	int		distance_x;
 	int		distance_y;
 	int		current_line;
+	int		decal_x;
+	int		angle_inc_y;
+	int		calc_x;
+	int		position_x;
 
 	current_line = 0;
 	// Afficher l'axe x
-	x = (1280 / len_line) - 10;
-	y = (900 / nb_line) - 10;
+	x = (1280 / len_line) - 66;
+	y = (900 / nb_line) - 66;
+	decal_x = 0;
 	while (current_line < nb_line)
 	{
 		i = 0;
 		while (i < len_line)
 		{
 			distance_x = 0;
-			while (distance_x < x && i != len_line - 1)
+			position_x = (x * (i + 1)) + 300 - (decal_x);
+			while (distance_x < x && i < len_line - 1)
 			{
-				mlx_pixel_put(mlx_ptr, mlx_win, (x * (i + 1)) + distance_x, (y * (current_line + 1)), 0xFFFFFF);
+				printf("%d\n", x*(i+1));
+				calc_x = position_x + distance_x;
+				printf("%d\n", calc_x);
+				mlx_pixel_put(mlx_ptr, mlx_win, calc_x, 300 + (y * (current_line + 1)), 0xFFFFFF);
 				distance_x++;
 			}
 			distance_y = 1;
-			while (distance_y < y && current_line != nb_line - 1)
+			angle_inc_y = 0;
+			while (distance_y < y && current_line < nb_line - 1)
 			{
-				mlx_pixel_put(mlx_ptr, mlx_win, (x * (i + 1)), (y * (current_line + 1)) + distance_y, 0xFFFFFF);
+				mlx_pixel_put(mlx_ptr, mlx_win, (position_x - angle_inc_y), 300 + (y * (current_line + 1)) + distance_y, 0xFFFFFF);
 				distance_y++;
+				angle_inc_y++;
 			}
 			i++;
 		}
+		decal_x += angle_inc_y;
 		current_line++;
 	}
 
