@@ -6,7 +6,7 @@
 /*   By: gvirga <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/29 14:11:34 by gvirga            #+#    #+#             */
-/*   Updated: 2018/11/05 14:18:47 by gvirga           ###   ########.fr       */
+/*   Updated: 2018/11/05 16:59:12 by gvirga           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@
 #define WIN_WIDTH 1280
 #define WIN_HEIGHT 900
 
-typedef struct			s_line
+typedef struct			s_coord
 {
 	int		x0;
 	int		y0;
@@ -32,7 +32,7 @@ typedef struct			s_line
 	int		height_size;
 	int		width;
 	int		height;
-}						t_line;
+}						t_coord;
 
 int		esc_key(int key, void *param)
 {
@@ -46,45 +46,51 @@ int		esc_key(int key, void *param)
 ** Need to add limits
 */
 
-void	draw_line(t_line *coords, int *my_image_string)
+void	draw_line(t_coord *coords, int *my_image_string)
 {
 	int		i;
 	int		curr_x;
 	int		curr_y;
 
 
-	curr_y = coords->y0;
-	curr_x = coords->x0;
-	coords->width = coords->x1 - coords->x0;
-	coords->height = coords->y1 - coords->y0;
-	coords->width < 0 ? (coords->dx1 = -1) : (coords->dx1 = 1);
-	coords->height < 0 ? (coords->dy1 = -1) : (coords->dy1 = 1);
-	coords->width < 0 ? (coords->dx2 = -1) : (coords->dx2 = 1);
-	coords->width_size = (int)fabs((double)coords->width);
-	coords->height_size = (int)fabs((double)coords->height);
-	if (coords->width_size < coords->height_size)
+	curr_y = (*coords).y0;
+	curr_x = (*coords).x0;
+	(*coords).dy2 = 0;
+	(*coords).width = (*coords).x1 - (*coords).x0;
+	(*coords).height = (*coords).y1 - (*coords).y0;
+	(*coords).width < 0 ? ((*coords).dx1 = -1) : ((*coords).dx1 = 1);
+	(*coords).height < 0 ? ((*coords).dy1 = -1) : ((*coords).dy1 = 1);
+	(*coords).width < 0 ? ((*coords).dx2 = -1) : ((*coords).dx2 = 1);
+	(*coords).width_size = (int)fabs((double)(*coords).width);
+	(*coords).height_size = (int)fabs((double)(*coords).height);
+	if ((*coords).width_size < (*coords).height_size)
 	{
-		coords->width_size = (int)fabs((double)coords->height);
-		coords->height_size = (int)fabs((double)coords->width);
-		coords->dx2 = 0;
-		coords->height < 0 ? (coords->dy2 = 1) : (coords->dy2 = -1);
+		(*coords).width_size = (int)fabs((double)(*coords).height);
+		(*coords).height_size = (int)fabs((double)(*coords).width);
+		(*coords).dx2 = 0;
+		(*coords).height < 0 ? ((*coords).dy2 = -1) : ((*coords).dy2 = 1);
 	}
-	coords->error_margin = coords->width_size >> 1;
+	(*coords).error_margin = (*coords).width_size >> 1;
 	i = -1;
-	while (++i <= coords->width_size)
+	while (++i <= (*coords).width_size)
 	{
-		my_image_string[curr_y * WIN_WIDTH + curr_x] = 0x00FF00;
-		coords->error_margin += coords->height_size;
-		if (coords->error_margin >= coords->width_size)
+		my_image_string[(curr_y * WIN_WIDTH) + curr_x] = 0x00FF00;
+		printf("size my_image_string: %d \n", ((curr_y * WIN_WIDTH) + curr_x));
+		printf("curr_x: %d \n", curr_y);
+		printf("curr_y %d \n", curr_x);
+		printf("WIN_WIDTH %d \n", WIN_WIDTH);
+		(*coords).error_margin += (*coords).height_size;
+		if ((*coords).error_margin >= (*coords).width_size)
 		{
-			coords->error_margin -= coords->width_size;
-			curr_y += coords->dy1;
-			curr_x += coords->dx1;
+			(*coords).error_margin -= (*coords).width_size;
+			curr_y += (*coords).dy1;
+			curr_x += (*coords).dx1;
 		}
 		else
 		{
-			curr_x += coords->dx1;
-			curr_y += coords->dy2;
+			printf("(*coords).dx2: %d\n", (*coords).dx2);
+			curr_x += (*coords).dx2;
+			curr_y += (*coords).dy2;
 		}
 	}
 }
@@ -111,7 +117,7 @@ int		main(void)
 	int		size_line;
 	int		endian;
 	int		*my_image_string;
-	t_line	*line_coords;
+	t_coord	coords;
 
 	y = -1;
 	i = -1;
@@ -123,14 +129,69 @@ int		main(void)
 	// Obtention de la string que represent l'image
 	my_image_string = (int*)mlx_get_data_addr(img_ptr, &bpp, &size_line, &endian);
 	// I can draw in this block
-	line_coords = (t_line*)malloc(sizeof(t_line));
-	line_coords->x0 = 130;
-	line_coords->x1 = 30;
-	line_coords->y0 = 100;
-	line_coords->y1 = 250;
-	line_coords->dx1 = line_coords->x0 - line_coords->x1;
-	line_coords->dy1 = line_coords->y0 - line_coords->y1;
-	draw_line(line_coords, my_image_string);
+	coords.x0 = WIN_WIDTH / 2;
+	coords.x1 = WIN_WIDTH / 2;
+	coords.y0 = WIN_HEIGHT / 2;
+	coords.y1 = (WIN_HEIGHT / 2) + 100;
+	coords.dx1 = coords.x0 - coords.x1;
+	coords.dy1 = coords.y0 - coords.y1;
+	draw_line(&coords, my_image_string);
+	coords.x0 = WIN_WIDTH / 2;
+	coords.x1 = WIN_WIDTH / 2;
+	coords.y0 = WIN_HEIGHT / 2;
+	coords.y1 = (WIN_HEIGHT / 2) - 100;
+	coords.dx1 = coords.x0 - coords.x1;
+	coords.dy1 = coords.y0 - coords.y1;
+	draw_line(&coords, my_image_string);
+	coords.x0 = WIN_WIDTH / 2;
+	coords.x1 = WIN_WIDTH / 2 + 100;
+	coords.y0 = WIN_HEIGHT / 2;
+	coords.y1 = (WIN_HEIGHT / 2);
+	coords.dx1 = coords.x0 - coords.x1;
+	coords.dy1 = coords.y0 - coords.y1;
+	draw_line(&coords, my_image_string);
+	coords.x0 = WIN_WIDTH / 2;
+	coords.x1 = WIN_WIDTH / 2 - 100;
+	coords.y0 = WIN_HEIGHT / 2;
+	coords.y1 = (WIN_HEIGHT / 2);
+	coords.dx1 = coords.x0 - coords.x1;
+	coords.dy1 = coords.y0 - coords.y1;
+	draw_line(&coords, my_image_string);
+	coords.x0 = WIN_WIDTH / 2;
+	coords.x1 = WIN_WIDTH / 2 - 100;
+	coords.y0 = WIN_HEIGHT / 2;
+	coords.y1 = (WIN_HEIGHT / 2) - 100;
+	coords.dx1 = coords.x0 - coords.x1;
+	coords.dy1 = coords.y0 - coords.y1;
+	draw_line(&coords, my_image_string);
+	coords.x0 = WIN_WIDTH / 2;
+	coords.x1 = WIN_WIDTH / 2 + 100;
+	coords.y0 = WIN_HEIGHT / 2;
+	coords.y1 = (WIN_HEIGHT / 2) + 100;
+	coords.dx1 = coords.x0 - coords.x1;
+	coords.dy1 = coords.y0 - coords.y1;
+	draw_line(&coords, my_image_string);
+	coords.x0 = WIN_WIDTH / 2;
+	coords.x1 = WIN_WIDTH / 2 + 100;
+	coords.y0 = WIN_HEIGHT / 2;
+	coords.y1 = (WIN_HEIGHT / 2) - 100;
+	coords.dx1 = coords.x0 - coords.x1;
+	coords.dy1 = coords.y0 - coords.y1;
+	draw_line(&coords, my_image_string);
+	coords.x0 = WIN_WIDTH / 2;
+	coords.x1 = WIN_WIDTH / 2 - 100;
+	coords.y0 = WIN_HEIGHT / 2;
+	coords.y1 = (WIN_HEIGHT / 2) + 100;
+	coords.dx1 = coords.x0 - coords.x1;
+	coords.dy1 = coords.y0 - coords.y1;
+	draw_line(&coords, my_image_string);
+	coords.x0 = WIN_WIDTH / 2;
+	coords.x1 = WIN_WIDTH / 2 - 150;
+	coords.y0 = WIN_HEIGHT / 2;
+	coords.y1 = (WIN_HEIGHT / 2) + 100;
+	coords.dx1 = coords.x0 - coords.x1;
+	coords.dy1 = coords.y0 - coords.y1;
+	draw_line(&coords, my_image_string);
 	mlx_put_image_to_window(mlx_ptr, win_ptr, img_ptr, 0, 0);
 /*
 	while (++y < 1)
