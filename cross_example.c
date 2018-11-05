@@ -6,7 +6,7 @@
 /*   By: gvirga <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/29 14:11:34 by gvirga            #+#    #+#             */
-/*   Updated: 2018/11/06 00:02:02 by gabriele         ###   ########.fr       */
+/*   Updated: 2018/11/05 18:21:23 by gabriele         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 #include <math.h>
 
 #define WIN_WIDTH 1280
-#define WIN_HEIGHT 720
+#define WIN_HEIGHT 900
 
 typedef struct			s_coord
 {
@@ -94,31 +94,24 @@ int		main(void)
 {
 	int		map[5][5] = 
 	{
-		{2, 5, 2, 2, 2},
-		{2, 5, 2, 2, 2},
-		{2, 2, 2, 2, 2},
-		{2, 2, 2, 2, 2},
-		{2, 2, 2, 2, 2}
+		{1, 1, 1, 1, 1},
+		{1, 5, 1, 2, 3},
+		{1, 1, 1, 2, 3},
+		{1, 2, 1, 2, 1},
+		{1, 1, 1, 1, 1}
 	};
-	int		**trans_map;
 	void	*mlx_ptr;
 	void	*win_ptr;
 	void	*img_ptr;
 	int		display_size[2];
 	int		i;
-	int		u;
 	int		y;
-	int		x0;
-	int		x1;
-	int		y0;
-	int		y1;
+	int		starting_x;
 	int		starting_y;
 	int		bpp;
 	int		size_line;
 	int		endian;
 	int		*my_image_string;
-	int		nb_of_columns;
-	int		nb_of_lines;
 	t_coord	coords;
 
 	y = -1;
@@ -131,81 +124,69 @@ int		main(void)
 	// Obtention de la string que represente l'image
 	my_image_string = (int*)mlx_get_data_addr(img_ptr, &bpp, &size_line, &endian);
 	// I can draw in this block
-	nb_of_columns = 5;
-	nb_of_lines = 5;
-	trans_map = (int**)malloc(sizeof(int*) * 25);
-	while (++i < nb_of_columns * nb_of_lines)
-	{
-		u = -1;
-		trans_map[i] = (int*)malloc(sizeof(int) * 2);
-		trans_map[i][0] = ((i % nb_of_columns) - map[i / nb_of_lines][i % nb_of_columns]) * cos(0.8);
-		trans_map[i][1] = (-(i / nb_of_lines) + ((i % nb_of_columns) + map[i / nb_of_lines][i % nb_of_columns]);
-	}
-	int dz;
-	int z1;
-	int z0;
-	/*
-	while (++i < nb_of_lines)
-	{
-		u = -1;
-		while (++u < nb_of_columns)
-		{
-			// ligne entre le point avec le point a droite
-			if (u + 1 != nb_of_columns)
-			{
-				z0 = map[i][u];
-				z1 = map[i][u + 1];
-				dz = z1 - z0; 
-				x0 = u;
-				x1 = u + 1;
-				y0 = i;
-				y1 = i;
-				coords.x0 = (x0 * 100) + WIN_WIDTH/2;
-				coords.x1 = (x1 * 100) + WIN_WIDTH/2;
-				coords.y0 = (y0 * 100) + WIN_HEIGHT/2;
-				coords.y1 = (y1 * 100) + WIN_HEIGHT/2;
-				if (dz >= 0)
-				{
-					coords.x1 = (x1 * 100) - 5*dz + WIN_WIDTH/2;
-					coords.y1 = (y1 * 100) - 5*dz + WIN_HEIGHT/2;
-				}
-				else 
-				{
-					coords.x0 = (x0 * 100) + 5*dz + WIN_WIDTH/2;
-					coords.y0 = (y0 * 100) + 5*dz + WIN_HEIGHT/2;
-				}
-				if (i == 0 && u == 0)
-					printf("%d %d %d %d %d %d %d %d %d\n", dz, x0, x1, y0, y1, coords.x0, coords.y0, coords.x1, coords.y1);
-				draw_line(&coords, my_image_string);
-			}
-			// ligne entre le point et le point en dessous
-			if (i + 1 != nb_of_lines)
-			{
-				z0 = map[i][u];
-				z1 = map[i + 1][u];
-				x0 = u;
-				x1 = u;
-				y0 = i;
-				y1 = i + 1;
-				dz = z1 - z0; 
-				coords.x0 = (x0 * 100) + WIN_WIDTH/2;
-				coords.x1 = (x1 * 100) + WIN_WIDTH/2;
-				coords.y0 = (y0 * 100) + WIN_HEIGHT/2;
-				coords.y1 = (y1 * 100) + WIN_HEIGHT/2;
-				if (dz >= 0)
-				{
-					coords.x1 = (x1 * 100) - 5*dz + WIN_WIDTH/2;
-					coords.y1 = (y1 * 100) - 5*dz + WIN_HEIGHT/2;
-				}
-				else if (dz < 0) 
-				{
-					coords.x0 = (x0 * 100) + 5*dz + WIN_WIDTH/2;
-					coords.y0 = (y0 * 100) + 5*dz + WIN_HEIGHT/2;
-				}
-				draw_line(&coords, my_image_string);	
-			}
-		}
-	}*/
+	coords.x0 = WIN_WIDTH / 2;
+	coords.x1 = WIN_WIDTH / 2;
+	coords.y0 = WIN_HEIGHT / 2;
+	coords.y1 = (WIN_HEIGHT / 2) + 100;
+	coords.dx1 = coords.x0 - coords.x1;
+	coords.dy1 = coords.y0 - coords.y1;
+	draw_line(&coords, my_image_string);
+	coords.x0 = WIN_WIDTH / 2;
+	coords.x1 = WIN_WIDTH / 2;
+	coords.y0 = WIN_HEIGHT / 2;
+	coords.y1 = (WIN_HEIGHT / 2) - 100;
+	coords.dx1 = coords.x0 - coords.x1;
+	coords.dy1 = coords.y0 - coords.y1;
+	draw_line(&coords, my_image_string);
+	coords.x0 = WIN_WIDTH / 2;
+	coords.x1 = WIN_WIDTH / 2 + 100;
+	coords.y0 = WIN_HEIGHT / 2;
+	coords.y1 = (WIN_HEIGHT / 2);
+	coords.dx1 = coords.x0 - coords.x1;
+	coords.dy1 = coords.y0 - coords.y1;
+	draw_line(&coords, my_image_string);
+	coords.x0 = WIN_WIDTH / 2;
+	coords.x1 = WIN_WIDTH / 2 - 100;
+	coords.y0 = WIN_HEIGHT / 2;
+	coords.y1 = (WIN_HEIGHT / 2);
+	coords.dx1 = coords.x0 - coords.x1;
+	coords.dy1 = coords.y0 - coords.y1;
+	draw_line(&coords, my_image_string);
+	coords.x0 = WIN_WIDTH / 2;
+	coords.x1 = WIN_WIDTH / 2 - 100;
+	coords.y0 = WIN_HEIGHT / 2;
+	coords.y1 = (WIN_HEIGHT / 2) - 100;
+	coords.dx1 = coords.x0 - coords.x1;
+	coords.dy1 = coords.y0 - coords.y1;
+	draw_line(&coords, my_image_string);
+	coords.x0 = WIN_WIDTH / 2;
+	coords.x1 = WIN_WIDTH / 2 + 100;
+	coords.y0 = WIN_HEIGHT / 2;
+	coords.y1 = (WIN_HEIGHT / 2) + 100;
+	coords.dx1 = coords.x0 - coords.x1;
+	coords.dy1 = coords.y0 - coords.y1;
+	draw_line(&coords, my_image_string);
+	coords.x0 = WIN_WIDTH / 2;
+	coords.x1 = WIN_WIDTH / 2 + 100;
+	coords.y0 = WIN_HEIGHT / 2;
+	coords.y1 = (WIN_HEIGHT / 2) - 100;
+	coords.dx1 = coords.x0 - coords.x1;
+	coords.dy1 = coords.y0 - coords.y1;
+	draw_line(&coords, my_image_string);
+	coords.x0 = WIN_WIDTH / 2;
+	coords.x1 = WIN_WIDTH / 2 - 100;
+	coords.y0 = WIN_HEIGHT / 2;
+	coords.y1 = (WIN_HEIGHT / 2) + 100;
+	coords.dx1 = coords.x0 - coords.x1;
+	coords.dy1 = coords.y0 - coords.y1;
+	draw_line(&coords, my_image_string);
+	coords.x0 = WIN_WIDTH / 2;
+	coords.x1 = WIN_WIDTH / 2 - 150;
+	coords.y0 = WIN_HEIGHT / 2;
+	coords.y1 = (WIN_HEIGHT / 2) + 100;
+	coords.dx1 = coords.x0 - coords.x1;
+	coords.dy1 = coords.y0 - coords.y1;
+	draw_line(&coords, my_image_string);
 	mlx_put_image_to_window(mlx_ptr, win_ptr, img_ptr, 0, 0);
 /*
 	while (++y < 1)
