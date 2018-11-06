@@ -6,7 +6,7 @@
 /*   By: gvirga <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/29 14:11:34 by gvirga            #+#    #+#             */
-/*   Updated: 2018/11/06 00:02:02 by gabriele         ###   ########.fr       */
+/*   Updated: 2018/11/06 20:03:40 by gvirga           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,7 @@ void	draw_line(t_coord *coords, int *my_image_string)
 	int		i;
 	int		curr_x;
 	int		curr_y;
-
+	int		pixel_pos;
 
 	curr_y = (*coords).y0;
 	curr_x = (*coords).x0;
@@ -74,7 +74,9 @@ void	draw_line(t_coord *coords, int *my_image_string)
 	i = -1;
 	while (++i <= (*coords).width_size)
 	{
-		my_image_string[(curr_y * WIN_WIDTH) + curr_x] = 0x00FF00;
+		pixel_pos = curr_y * WIN_WIDTH + curr_x;
+		if ((pixel_pos >= 0 && pixel_pos < WIN_WIDTH * WIN_HEIGHT))
+			my_image_string[pixel_pos] = 0x00FF00;
 		(*coords).error_margin += (*coords).height_size;
 		if ((*coords).error_margin >= (*coords).width_size)
 		{
@@ -94,11 +96,11 @@ int		main(void)
 {
 	int		map[5][5] = 
 	{
-		{2, 5, 2, 2, 2},
-		{2, 5, 2, 2, 2},
-		{2, 2, 2, 2, 2},
-		{2, 2, 2, 2, 2},
-		{2, 2, 2, 2, 2}
+		{1, 1, 1, 1, 1},
+		{5, 5, 5, 5, 5},
+		{5, 5, 5, 5, 5},
+		{1, 1, 1, 1, 1},
+		{1, 1, 1, 1, 1}
 	};
 	int		**trans_map;
 	void	*mlx_ptr;
@@ -133,18 +135,20 @@ int		main(void)
 	// I can draw in this block
 	nb_of_columns = 5;
 	nb_of_lines = 5;
+	//perc_wscreen = WIN_WIDTH / (nb_of_columns + max_height + 1);
+	//margin_wscreen = WIN_WIDTH / nb_of_columns << 1;
+	//perc_hscreen = WIN_HEIGHT / nb_of_lines;
+	//margin_hscreen = WIN_HEIGHT / nb_of_lines << 1;
 	trans_map = (int**)malloc(sizeof(int*) * 25);
 	while (++i < nb_of_columns * nb_of_lines)
 	{
 		u = -1;
 		trans_map[i] = (int*)malloc(sizeof(int) * 2);
-		trans_map[i][0] = ((i % nb_of_columns) - map[i / nb_of_lines][i % nb_of_columns]) * cos(0.8);
-		trans_map[i][1] = (-(i / nb_of_lines) + ((i % nb_of_columns) + map[i / nb_of_lines][i % nb_of_columns]);
+		trans_map[i][0] = ((i % nb_of_columns) - (map[i / nb_of_lines][i % nb_of_columns] - 1));
+		trans_map[i][1] = ((i / nb_of_lines) +  (map[i / nb_of_lines][i % nb_of_columns] - 1));
+		printf("trans_map[%d][0]: %d trans_map[%d][1]: %d\n", i, trans_map[i][0], i, trans_map[i][1]);
 	}
-	int dz;
-	int z1;
-	int z0;
-	/*
+	i = -1;
 	while (++i < nb_of_lines)
 	{
 		u = -1;
@@ -153,59 +157,33 @@ int		main(void)
 			// ligne entre le point avec le point a droite
 			if (u + 1 != nb_of_columns)
 			{
-				z0 = map[i][u];
-				z1 = map[i][u + 1];
-				dz = z1 - z0; 
-				x0 = u;
-				x1 = u + 1;
-				y0 = i;
-				y1 = i;
-				coords.x0 = (x0 * 100) + WIN_WIDTH/2;
-				coords.x1 = (x1 * 100) + WIN_WIDTH/2;
-				coords.y0 = (y0 * 100) + WIN_HEIGHT/2;
-				coords.y1 = (y1 * 100) + WIN_HEIGHT/2;
-				if (dz >= 0)
-				{
-					coords.x1 = (x1 * 100) - 5*dz + WIN_WIDTH/2;
-					coords.y1 = (y1 * 100) - 5*dz + WIN_HEIGHT/2;
-				}
-				else 
-				{
-					coords.x0 = (x0 * 100) + 5*dz + WIN_WIDTH/2;
-					coords.y0 = (y0 * 100) + 5*dz + WIN_HEIGHT/2;
-				}
+				x0 = trans_map[u + (i * nb_of_columns)][0];
+				x1 = trans_map[u + (i * nb_of_columns) + 1][0];
+				y0 = trans_map[u + (i * nb_of_columns)][1];
+				y1 = trans_map[u + (i * nb_of_columns) + 1][1];
+				coords.x0 = (x0 * 100) + WIN_WIDTH/4;
+				coords.x1 = (x1 * 100) + WIN_WIDTH/4;
+				coords.y0 = (y0 * 100) + WIN_HEIGHT/4;
+				coords.y1 = (y1 * 100) + WIN_HEIGHT/4;
 				if (i == 0 && u == 0)
-					printf("%d %d %d %d %d %d %d %d %d\n", dz, x0, x1, y0, y1, coords.x0, coords.y0, coords.x1, coords.y1);
+					printf(" %d %d %d %d %d %d %d %d\n", x0, x1, y0, y1, coords.x0, coords.y0, coords.x1, coords.y1);
 				draw_line(&coords, my_image_string);
 			}
 			// ligne entre le point et le point en dessous
-			if (i + 1 != nb_of_lines)
+			if (i + 1 != nb_of_lines && u != nb_of_columns)
 			{
-				z0 = map[i][u];
-				z1 = map[i + 1][u];
-				x0 = u;
-				x1 = u;
-				y0 = i;
-				y1 = i + 1;
-				dz = z1 - z0; 
-				coords.x0 = (x0 * 100) + WIN_WIDTH/2;
-				coords.x1 = (x1 * 100) + WIN_WIDTH/2;
-				coords.y0 = (y0 * 100) + WIN_HEIGHT/2;
-				coords.y1 = (y1 * 100) + WIN_HEIGHT/2;
-				if (dz >= 0)
-				{
-					coords.x1 = (x1 * 100) - 5*dz + WIN_WIDTH/2;
-					coords.y1 = (y1 * 100) - 5*dz + WIN_HEIGHT/2;
-				}
-				else if (dz < 0) 
-				{
-					coords.x0 = (x0 * 100) + 5*dz + WIN_WIDTH/2;
-					coords.y0 = (y0 * 100) + 5*dz + WIN_HEIGHT/2;
-				}
-				draw_line(&coords, my_image_string);	
+				x1 = trans_map[u + ((i + 1) * nb_of_lines)][0];
+				y0 = trans_map[u + (i * nb_of_lines)][1];
+				x0 = trans_map[u + (i * nb_of_lines)][0];
+				y1 = trans_map[u + ((i + 1) * nb_of_lines)][1];
+				coords.x0 = (x0 * 100) + WIN_WIDTH/4;
+				coords.x1 = (x1 * 100) + WIN_WIDTH/4;
+				coords.y0 = (y0 * 100) + WIN_HEIGHT/4;
+				coords.y1 = (y1 * 100) + WIN_HEIGHT/4;
+				draw_line(&coords, my_image_string);
 			}
 		}
-	}*/
+	}
 	mlx_put_image_to_window(mlx_ptr, win_ptr, img_ptr, 0, 0);
 /*
 	while (++y < 1)
