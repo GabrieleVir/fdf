@@ -6,7 +6,7 @@
 /*   By: gvirga <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/02 13:14:43 by gvirga            #+#    #+#             */
-/*   Updated: 2018/11/08 15:50:35 by gvirga           ###   ########.fr       */
+/*   Updated: 2018/11/08 16:45:17 by gvirga           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,9 +43,15 @@ typedef struct			s_mlx
 	void				*mlx_ptr;
 	void				*win_ptr;
 	void				*img_ptr;
-
 }						t_mlx;
 
+typedef struct			s_map
+{
+	int					nb_of_columns;
+	int					nb_of_lines;
+	int					*map_normal;
+	int					*map_transformed;
+}						t_map;
 /*
  ** Two gnl for : 
  ** 1) verification and number of lines.
@@ -158,38 +164,17 @@ int		mouse_key(int button, int x, int y, void *my_image_string)
 	return (1);
 }
 */
-
-
-int		main(int ac, char **av)
+int		fill_map(char *path_file, t_map **maps)
 {
-	t_mlx	*mlx_data;
-	int		x = -1;
-	int		y = -1;
-	char	line[BUFF_SIZE + 1];
-	int		fd;
-	char 	**map;
-	int		**map_final;
-	int		nb_of_lines;
-	int		i;
-	int		nb_of_columns;
-	char	**numbers_of_current_line;
 	int		ret;
+	char	line[BUFF_SIZE + 1];
 	char	*str;
-	char	*tmp;
-	char	**tmp1;
-	// 
-	if (!(mlx_data = (t_mlx*)malloc(sizeof(t_mlx))))
-		return (error_management("mlx_data", "malloced"));
-	if (!(mlx_data->mlx_ptr = mlx_init()))
-		return (error_management);
-	if (!(mlx_data->win_ptr = mlx_new_window(mlx_data->mlx_ptr, mlx_data.win_width,
-			mlx_data.win_height, "42")))
-		return (error_management("mlx_data->win_ptr", "malloced"));
-	if (!(map_normal = fill_map(av[1])))
-		return (error_management("map_normal", "malloced"));
-	nb_of_lines = 0;
-	str = ft_strnew(0);
-	fd = open("./maps/42.fdf", O_RDONLY);
+
+	if (!(maps = (t_map*)malloc(sizeof(t_map))))
+		return (error_management("maps", "malloced"));
+	fd = open(path_file, O_RDONLY);
+	if (!(str = ft_strnew(0)))
+		return (NULL);
 	while ((ret = read(fd, line, BUFF_SIZE)) > 0)
 	{
 		line[ret] = '\0';
@@ -197,6 +182,39 @@ int		main(int ac, char **av)
 		str = ft_strjoin_free(tmp, line, 1);
 	}
 	close(fd);
+	return (map);
+}
+
+int		main(int ac, char **av)
+{
+	t_mlx	*mlx_data;
+	t_map	*maps;
+	int		x = -1;
+	int		y = -1;
+	char	line[BUFF_SIZE + 1];
+	int		fd;
+	char 	**map;
+	int		**map_final;
+	int		i;
+	char	**numbers_of_current_line;
+	int		ret;
+	char	*tmp;
+	char	**tmp1;
+
+	// rendering info
+	if (!(mlx_data = (t_mlx*)malloc(sizeof(t_mlx))))
+		return (error_management("mlx_data", "malloced"));
+	if (!(mlx_data->mlx_ptr = mlx_init()))
+		return (error_management);
+	if (!(mlx_data->win_ptr = mlx_new_window(mlx_data->mlx_ptr, mlx_data.win_width,
+			mlx_data.win_height, "42")))
+		return (error_management("mlx_data->win_ptr", "malloced"));
+	// Filling the =! types of map
+	if (!(maps = (t_map*)malloc(sizeof(t_map))))
+		return (error_management("maps", "malloced"));
+	if (!(maps->map_normal = fill_map(av[1], &maps)))
+		return (error_management("map_normal", "malloced"));
+	nb_of_lines = 0;
 	nb_of_lines = ft_wordcount(str, '\n');
 	if (ret == -1)
 		return (-1);
