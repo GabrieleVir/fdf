@@ -6,7 +6,7 @@
 /*   By: gvirga <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/02 13:14:43 by gvirga            #+#    #+#             */
-/*   Updated: 2018/11/08 15:10:07 by gvirga           ###   ########.fr       */
+/*   Updated: 2018/11/08 15:50:35 by gvirga           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -160,7 +160,7 @@ int		mouse_key(int button, int x, int y, void *my_image_string)
 */
 
 
-int		main(void)
+int		main(int ac, char **av)
 {
 	t_mlx	*mlx_data;
 	int		x = -1;
@@ -177,13 +177,16 @@ int		main(void)
 	char	*str;
 	char	*tmp;
 	char	**tmp1;
-	// Etape 1 Verification du fichier
-	mlx_data = (t_mlx*)malloc(sizeof(t_mlx));
-	mlx_data->mlx_ptr = mlx_init();
-	mlx_data->win_ptr = mlx_new_window(mlx_data->mlx_ptr, mlx_data.win_width,
-			mlx_data.win_height, "42");
-	if (!(win_ptr = mlx_new_window(mlx_ptr, WIN_WIDTH, WIN_HEIGHT, "42")))
-		return (-1);
+	// 
+	if (!(mlx_data = (t_mlx*)malloc(sizeof(t_mlx))))
+		return (error_management("mlx_data", "malloced"));
+	if (!(mlx_data->mlx_ptr = mlx_init()))
+		return (error_management);
+	if (!(mlx_data->win_ptr = mlx_new_window(mlx_data->mlx_ptr, mlx_data.win_width,
+			mlx_data.win_height, "42")))
+		return (error_management("mlx_data->win_ptr", "malloced"));
+	if (!(map_normal = fill_map(av[1])))
+		return (error_management("map_normal", "malloced"));
 	nb_of_lines = 0;
 	str = ft_strnew(0);
 	fd = open("./maps/42.fdf", O_RDONLY);
