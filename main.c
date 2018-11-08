@@ -6,7 +6,7 @@
 /*   By: gvirga <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/02 13:14:43 by gvirga            #+#    #+#             */
-/*   Updated: 2018/11/07 22:10:32 by gvirga           ###   ########.fr       */
+/*   Updated: 2018/11/08 15:10:07 by gvirga           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -158,10 +158,11 @@ int		mouse_key(int button, int x, int y, void *my_image_string)
 	return (1);
 }
 */
+
+
 int		main(void)
 {
-	void	*mlx_ptr;
-	void	*win_ptr;
+	t_mlx	*mlx_data;
 	int		x = -1;
 	int		y = -1;
 	char	line[BUFF_SIZE + 1];
@@ -177,8 +178,10 @@ int		main(void)
 	char	*tmp;
 	char	**tmp1;
 	// Etape 1 Verification du fichier
-	if (!(mlx_ptr = mlx_init()))
-		return (-1);
+	mlx_data = (t_mlx*)malloc(sizeof(t_mlx));
+	mlx_data->mlx_ptr = mlx_init();
+	mlx_data->win_ptr = mlx_new_window(mlx_data->mlx_ptr, mlx_data.win_width,
+			mlx_data.win_height, "42");
 	if (!(win_ptr = mlx_new_window(mlx_ptr, WIN_WIDTH, WIN_HEIGHT, "42")))
 		return (-1);
 	nb_of_lines = 0;
