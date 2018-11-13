@@ -6,7 +6,7 @@
 /*   By: gvirga <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/02 13:14:43 by gvirga            #+#    #+#             */
-/*   Updated: 2018/11/13 15:20:27 by gvirga           ###   ########.fr       */
+/*   Updated: 2018/11/13 17:25:55 by gvirga           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,14 +59,28 @@ typedef struct			s_map
 	int					lowest_point;
 }						t_map;
 
-int		deal_key(int key, void* param)
+int		move_trans_map(t_map **map, int direction)
 {
-	if (key == 53)
-		exit(1);
+	int		i;
+
+	i = -1;
+	if (direction == 0)
+		while (++i < (*map)->columns * (*map)->lines)
+			(*map)->trans_map[i * 3] -= 1;
+	else if (direction == 1)
+		while (++i < (*map)->columns * (*map)->lines)
+			(*map)->trans_map[i * 3 + 1] += 1;
+	else if (direction == 2)
+		while (++i < (*map)->columns * (*map)->lines)
+			(*map)->trans_map[i * 3] += 1;
 	else
-		printf("keycode : %d\n", key);
-	return (0);
+	{
+		while (++i < (*map)->columns * (*map)->lines)
+			(*map)->trans_map[i * 3 + 1] -= 1;
+	}	
+	return(1);
 }
+
 
 /*
  ** This manage all the octants, the magic is in the initiation of dx1 and dy1
@@ -133,6 +147,75 @@ void	draw_line(t_coord *coords, int *my_image_string)
 			curr_y += (*coords).dy2;
 		}
 	}
+}
+
+int		redraw_map(t_mlx **mlx_data, t_map *maps)
+{
+	int		display_size[2];
+	int		i;
+	int		starting_y;
+	int		bpp;
+	int		size_line;
+	int		endian;
+	int		*my_image_string;
+	t_coord	coords;
+
+	printf("1\n");
+	printf("mlx->mlx_ptr: %p\n", (*mlx_data)->mlx_ptr);
+	mlx_destroy_image((*mlx_data)->mlx_ptr, (*mlx_data)->img_ptr);
+	printf("2\n");
+	i = -1;
+	display_size[0] = (*mlx_data)->win_width;
+	display_size[1] = (*mlx_data)->win_height;
+	(*mlx_data)->img_ptr = mlx_new_image((*mlx_data)->mlx_ptr, display_size[0], display_size[1]);
+	// Obtention de la string que represente l'image
+	my_image_string = (int*)mlx_get_data_addr((*mlx_data)->img_ptr, &bpp, &size_line, &endian);
+	printf("3\n");
+	i = -1;
+	while (++i < maps->lines * maps->columns)
+	{
+		if ((i + 1) % maps->columns != 0)
+		{
+			coords.x0 = maps->trans_map[i * 3];
+			coords.x1 = maps->trans_map[(i + 1) * 3];
+			coords.y0 = maps->trans_map[i * 3 + 1];
+			coords.y1 = maps->trans_map[(i + 1) * 3 + 1];
+			coords.z0 = maps->trans_map[i * 3 + 2];
+			coords.z1 = maps->trans_map[(i + 1) * 3 + 2];
+			draw_line(&coords, my_image_string);
+		}
+		if (i + maps->columns < maps->columns * maps->lines)
+		{
+			coords.x0 = maps->trans_map[i * 3];
+			coords.x1 = maps->trans_map[(i + maps->columns) * 3];
+			coords.y0 = maps->trans_map[i * 3 + 1];
+			coords.y1 = maps->trans_map[(i + maps->columns) * 3 + 1];
+			coords.z0 = maps->trans_map[i * 3 + 2];
+			coords.z1 = maps->trans_map[(i + maps->columns) * 3 + 2];
+			draw_line(&coords, my_image_string);
+		}
+	}
+	printf("4\n");
+	mlx_put_image_to_window((*mlx_data)->mlx_ptr, (*mlx_data)->win_ptr, (*mlx_data)->img_ptr, 0, 0);	
+	return (1);
+}
+
+int		deal_key(int key, void *params[2])
+{
+	t_map	*maps;
+	t_mlx	*mlx_data;
+
+	maps = (t_map*)params[0];
+	mlx_data = (t_mlx*)params[1];
+	printf("maps address: %p, mlx_data address: %p\n", &maps, &mlx_data);
+	if (key == 53)
+		exit(1);
+	else if (key >= 123 && key <= 126)
+	{
+		move_trans_map(&maps, key - 123);
+		redraw_map(&mlx_data, maps);
+	}
+	return (0);
 }
 /*
 int		mouse_key(int button, int x, int y, void *my_image_string)
@@ -306,7 +389,6 @@ int		draw_map(t_mlx **mlx_data, t_map *maps)
 	i = -1;
 	display_size[0] = (*mlx_data)->win_width;
 	display_size[1] = (*mlx_data)->win_height;
-	printf("Am I getting here?");
 	(*mlx_data)->img_ptr = mlx_new_image((*mlx_data)->mlx_ptr, display_size[0], display_size[1]);
 	// Obtention de la string que represente l'image
 	my_image_string = (int*)mlx_get_data_addr((*mlx_data)->img_ptr, &bpp, &size_line, &endian);
@@ -358,14 +440,17 @@ int		main(int ac, char **av)
 	// Filling the =! types of map
 	if (!(maps = (t_map*)malloc(sizeof(t_map))))
 		return (error_management("maps", "malloc"));
-	if (!(read_map(av[1], &maps)))
+	if ((read_map(av[1], &maps) < 0))
 		return (error_management("default_map", "read_map()"));
 	if (!(trans_map(&maps, mlx_data->win_width, mlx_data->win_height)))
 		return (error_management("trans_map", "trans_map()"));
 	draw_map(&mlx_data, maps);
 	mlx_put_image_to_window(mlx_data->mlx_ptr, mlx_data->win_ptr, mlx_data->img_ptr, 0, 0);
 	//mlx_mouse_hook(win_ptr, &mouse_key, my_image_string);
-	mlx_key_hook(mlx_data->win_ptr, &deal_key, NULL);
+	void	*params[2];
+	params[0] = &mlx_data;
+	params[1] = &maps;
+	mlx_key_hook(mlx_data->win_ptr, &deal_key, params);
 	mlx_loop(mlx_data->mlx_ptr);
 	return (0);
 }
