@@ -6,7 +6,7 @@
 /*   By: gvirga <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/02 13:14:43 by gvirga            #+#    #+#             */
-/*   Updated: 2018/11/13 02:24:05 by gabriele         ###   ########.fr       */
+/*   Updated: 2018/11/13 15:20:27 by gvirga           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,12 +55,16 @@ typedef struct			s_map
 	int					distance_y;
 	int					*default_map;
 	int					*trans_map;
+	int					higher_point;
+	int					lowest_point;
 }						t_map;
 
 int		deal_key(int key, void* param)
 {
 	if (key == 53)
 		exit(1);
+	else
+		printf("keycode : %d\n", key);
 	return (0);
 }
 
@@ -252,7 +256,7 @@ int		read_map(char *path_file, t_map **maps)
 ** for the width and height of the mlx_window
 */
 
-int		trans_map(t_map	**maps, int width, int height)
+int		trans_map(t_map **maps, int width, int height)
 {
 	int		i;
 	int		lines;
@@ -263,6 +267,8 @@ int		trans_map(t_map	**maps, int width, int height)
 
 	lines = (*maps)->lines;
 	columns = (*maps)->columns;
+	(*maps)->lowest_point = 0;
+	(*maps)->higher_point = 0;
 	i = -1;
 	if (((*maps)->distance_x = width / (columns * 4)) < 10)
 		(*maps)->distance_x = 10;
@@ -278,43 +284,18 @@ int		trans_map(t_map	**maps, int width, int height)
 		(*maps)->trans_map[i * 3] = x * cos(0.523599) + y * sin(0.523599) + z * sin(0.523599);
 		(*maps)->trans_map[i * 3 + 1] = -(x * sin(0.523599)) + y * cos(0.523599) - z * cos(0.523599);
 		(*maps)->trans_map[i * 3 + 2] = (*maps)->default_map[i];
+		if ((*maps)->higher_point < (*maps)->trans_map[i * 3 + 2])
+			(*maps)->higher_point = (*maps)->trans_map[i * 3 + 2];
+		if ((*maps)->lowest_point > (*maps)->trans_map[i * 3 + 2])
+			(*maps)->lowest_point = (*maps)->trans_map[i * 3 + 2];
 	}
 	return (1);
 }
 
-int		main(int ac, char **av)
+int		draw_map(t_mlx **mlx_data, t_map *maps)
 {
-	t_mlx	*mlx_data;
-	t_map	*maps;
-	int		x = -1;
-	int		y = -1;
-	int		i;
-
-	if (ac != 2)
-		return (-1);
-	// mlx initialisation of the mlx
-	if (!(mlx_data = (t_mlx*)malloc(sizeof(t_mlx))))
-		return (error_management("mlx_data", "malloc"));
-	if (!(mlx_data->mlx_ptr = mlx_init()))
-		return (error_management("mlx_data->mlx_ptr", "mlx_init()"));
-	mlx_data->win_width = 1280;
-	mlx_data->win_height = 720;
-	if (!(mlx_data->win_ptr = mlx_new_window(mlx_data->mlx_ptr,
-					mlx_data->win_width, mlx_data->win_height, "42")))
-		return (error_management("mlx_data->win_ptr", "new_window()"));
-	// Filling the =! types of map
-	if (!(maps = (t_map*)malloc(sizeof(t_map))))
-		return (error_management("maps", "malloc"));
-	if (!(read_map(av[1], &maps)))
-		return (error_management("default_map", "read_map()"));
-	if (!(trans_map(&maps, mlx_data->win_width, mlx_data->win_height)))
-		return (error_management("trans_map", "trans_map()"));
 	int		display_size[2];
-	int		u;
-	int		x0;
-	int		x1;
-	int		y0;
-	int		y1;
+	int		i;
 	int		starting_y;
 	int		bpp;
 	int		size_line;
@@ -322,13 +303,13 @@ int		main(int ac, char **av)
 	int		*my_image_string;
 	t_coord	coords;
 
-	y = -1;
 	i = -1;
-	display_size[0] = mlx_data->win_width;
-	display_size[1] = mlx_data->win_height;
-	mlx_data->img_ptr = mlx_new_image(mlx_data->mlx_ptr, display_size[0], display_size[1]);
+	display_size[0] = (*mlx_data)->win_width;
+	display_size[1] = (*mlx_data)->win_height;
+	printf("Am I getting here?");
+	(*mlx_data)->img_ptr = mlx_new_image((*mlx_data)->mlx_ptr, display_size[0], display_size[1]);
 	// Obtention de la string que represente l'image
-	my_image_string = (int*)mlx_get_data_addr(mlx_data->img_ptr, &bpp, &size_line, &endian);
+	my_image_string = (int*)mlx_get_data_addr((*mlx_data)->img_ptr, &bpp, &size_line, &endian);
 	i = -1;
 	while (++i < maps->lines * maps->columns)
 	{
@@ -353,46 +334,35 @@ int		main(int ac, char **av)
 			draw_line(&coords, my_image_string);
 		}
 	}
-	/*
-	while (++i < nb_of_lines)
-	{
-		u = -1;
-		while (++u < nb_of_columns)
-		{
-			// ligne entre le point avec le point a droite
-			if (u + 1 != nb_of_columns)
-			{
-				x0 = trans_map[u + (i * nb_of_columns)][0];
-				x1 = trans_map[u + (i * nb_of_columns) + 1][0];
-				y0 = trans_map[u + (i * nb_of_columns)][1];
-				y1 = trans_map[u + (i * nb_of_columns) + 1][1];
-				coords.x0 = (x0 * distance) + 1 + (max_height * distance);
-				coords.x1 = (x1 * distance) + 1 + (max_height * distance);
-				coords.y0 = (y0 * distance) + WIN_HEIGHT - (nb_of_lines * distance) - (max_height * distance) - 1;
-				coords.y1 = (y1 * distance) + WIN_HEIGHT - (nb_of_lines * distance) - (max_height * distance) - 1;
-				coords.color = trans_map[u + (i * nb_of_columns) + 1][2] - trans_map[u + (i * nb_of_columns)][2];
-				coords.z0 = trans_map[u + (i * nb_of_columns)][2];
-				coords.z1 = trans_map[u + (i * nb_of_columns) + 1][2];
-				draw_line(&coords, my_image_string);
-			}
-			// ligne entre le point et le point en dessous
-			if (i + 1 != nb_of_lines && u != nb_of_columns)
-			{
-				x1 = trans_map[u + ((i + 1) * nb_of_columns)][0];
-				y0 = trans_map[u + (i * nb_of_columns)][1];
-				x0 = trans_map[u + (i * nb_of_columns)][0];
-				y1 = trans_map[u + ((i + 1) * nb_of_columns)][1];
-				coords.x0 = (x0 * distance) + 1 + (max_height * distance);
-				coords.x1 = (x1 * distance) + 1 + (max_height * distance);
-				coords.y0 = (y0 * distance) + WIN_HEIGHT - (nb_of_lines * distance) - (max_height * distance) - 1;
-				coords.y1 = (y1 * distance) + WIN_HEIGHT - (nb_of_lines * distance) - (max_height * distance) - 1;
-				coords.color = trans_map[u + ((i + 1) * nb_of_columns)][2] - trans_map[u + (i * nb_of_columns)][2];
-				coords.z0 = trans_map[u + (i * nb_of_columns)][2];
-				coords.z1 = trans_map[u + ((i + 1) * nb_of_columns)][2];
-				draw_line(&coords, my_image_string);
-			}
-		}
-	}*/
+	return (1);
+}
+
+int		main(int ac, char **av)
+{
+	t_mlx	*mlx_data;
+	t_map	*maps;
+	int		i;
+
+	if (ac != 2)
+		return (-1);
+	// mlx initialisation of the mlx
+	if (!(mlx_data = (t_mlx*)malloc(sizeof(t_mlx))))
+		return (error_management("mlx_data", "malloc"));
+	if (!(mlx_data->mlx_ptr = mlx_init()))
+		return (error_management("mlx_data->mlx_ptr", "mlx_init()"));
+	mlx_data->win_width = 1280;
+	mlx_data->win_height = 720;
+	if (!(mlx_data->win_ptr = mlx_new_window(mlx_data->mlx_ptr,
+					mlx_data->win_width, mlx_data->win_height, "42")))
+		return (error_management("mlx_data->win_ptr", "new_window()"));
+	// Filling the =! types of map
+	if (!(maps = (t_map*)malloc(sizeof(t_map))))
+		return (error_management("maps", "malloc"));
+	if (!(read_map(av[1], &maps)))
+		return (error_management("default_map", "read_map()"));
+	if (!(trans_map(&maps, mlx_data->win_width, mlx_data->win_height)))
+		return (error_management("trans_map", "trans_map()"));
+	draw_map(&mlx_data, maps);
 	mlx_put_image_to_window(mlx_data->mlx_ptr, mlx_data->win_ptr, mlx_data->img_ptr, 0, 0);
 	//mlx_mouse_hook(win_ptr, &mouse_key, my_image_string);
 	mlx_key_hook(mlx_data->win_ptr, &deal_key, NULL);
