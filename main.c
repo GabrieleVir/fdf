@@ -6,7 +6,7 @@
 /*   By: gvirga <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/02 13:14:43 by gvirga            #+#    #+#             */
-/*   Updated: 2018/11/14 22:47:13 by gvirga           ###   ########.fr       */
+/*   Updated: 2018/11/14 23:14:34 by gvirga           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -218,13 +218,13 @@ int		redraw_map(t_mlx **mlx_data, t_map *maps)
 	return (1);
 }
 
-int		deal_key(int key, t_params **params)
+int		deal_key(int key, t_params *params)
 {
 	t_map	*maps;
 	t_mlx	*mlx_data;
 
-	maps = (*params)->maps;
-	mlx_data = (*params)->mlx_data;
+	maps = params->maps;
+	mlx_data = params->mlx_data;
 	if (key == 53)
 		exit(1);
 	else if (key >= 123 && key <= 126)
@@ -235,13 +235,14 @@ int		deal_key(int key, t_params **params)
 	return (0);
 }
 
-int		change_height(int key, t_params **params)
+int		change_height(int key, int x, int y, t_params *params)
 {
 	t_map	*maps;
 	t_mlx	*mlx_data;
 
-	maps = (*params)->maps;
-	mlx_data = (*params)->mlx_data;
+	x = y;
+	maps = params->maps;
+	mlx_data = params->mlx_data;
 	if (key == 4 || key == 5)
 	{
 		move_z_value(&maps, key - 4);
@@ -535,8 +536,8 @@ int			main(int ac, char **av)
 	params->mlx_data = mlx_data;
 	params->maps = maps;
 	printf("params->maps: %p params->mlx_data: %p\n", params->maps, params->mlx_data);
-	mlx_key_hook(mlx_data->win_ptr, &deal_key, &params);
-	mlx_hook(mlx_data->mlx_ptr, &change_height, &params);
+	mlx_key_hook(mlx_data->win_ptr, &deal_key, params);
+	mlx_mouse_hook(mlx_data->win_ptr, &change_height, params);
 	mlx_loop(mlx_data->mlx_ptr);
 	return (0);
 }
