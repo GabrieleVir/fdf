@@ -6,7 +6,7 @@
 /*   By: gvirga <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/02 13:14:43 by gvirga            #+#    #+#             */
-/*   Updated: 2018/11/13 17:25:55 by gvirga           ###   ########.fr       */
+/*   Updated: 2018/11/14 08:48:07 by gvirga           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,6 +59,12 @@ typedef struct			s_map
 	int					lowest_point;
 }						t_map;
 
+typedef struct			s_params
+{
+	t_map				*maps;
+	t_mlx				*mlx_data;
+}						t_params;
+
 int		move_trans_map(t_map **map, int direction)
 {
 	int		i;
@@ -67,10 +73,10 @@ int		move_trans_map(t_map **map, int direction)
 	if (direction == 0)
 		while (++i < (*map)->columns * (*map)->lines)
 			(*map)->trans_map[i * 3] -= 1;
-	else if (direction == 1)
+	else if (direction == 2)
 		while (++i < (*map)->columns * (*map)->lines)
 			(*map)->trans_map[i * 3 + 1] += 1;
-	else if (direction == 2)
+	else if (direction == 1)
 		while (++i < (*map)->columns * (*map)->lines)
 			(*map)->trans_map[i * 3] += 1;
 	else
@@ -160,17 +166,13 @@ int		redraw_map(t_mlx **mlx_data, t_map *maps)
 	int		*my_image_string;
 	t_coord	coords;
 
-	printf("1\n");
-	printf("mlx->mlx_ptr: %p\n", (*mlx_data)->mlx_ptr);
 	mlx_destroy_image((*mlx_data)->mlx_ptr, (*mlx_data)->img_ptr);
-	printf("2\n");
 	i = -1;
 	display_size[0] = (*mlx_data)->win_width;
 	display_size[1] = (*mlx_data)->win_height;
 	(*mlx_data)->img_ptr = mlx_new_image((*mlx_data)->mlx_ptr, display_size[0], display_size[1]);
 	// Obtention de la string que represente l'image
 	my_image_string = (int*)mlx_get_data_addr((*mlx_data)->img_ptr, &bpp, &size_line, &endian);
-	printf("3\n");
 	i = -1;
 	while (++i < maps->lines * maps->columns)
 	{
@@ -195,19 +197,17 @@ int		redraw_map(t_mlx **mlx_data, t_map *maps)
 			draw_line(&coords, my_image_string);
 		}
 	}
-	printf("4\n");
 	mlx_put_image_to_window((*mlx_data)->mlx_ptr, (*mlx_data)->win_ptr, (*mlx_data)->img_ptr, 0, 0);	
 	return (1);
 }
 
-int		deal_key(int key, void *params[2])
+int		deal_key(int key, t_params *params)
 {
 	t_map	*maps;
 	t_mlx	*mlx_data;
 
-	maps = (t_map*)params[0];
-	mlx_data = (t_mlx*)params[1];
-	printf("maps address: %p, mlx_data address: %p\n", &maps, &mlx_data);
+	maps = params->maps;
+	mlx_data = params->mlx_data;
 	if (key == 53)
 		exit(1);
 	else if (key >= 123 && key <= 126)
@@ -421,8 +421,9 @@ int		draw_map(t_mlx **mlx_data, t_map *maps)
 
 int		main(int ac, char **av)
 {
-	t_mlx	*mlx_data;
-	t_map	*maps;
+	t_mlx		*mlx_data;
+	t_map		*maps;
+	t_params	*params;
 	int		i;
 
 	if (ac != 2)
@@ -447,10 +448,10 @@ int		main(int ac, char **av)
 	draw_map(&mlx_data, maps);
 	mlx_put_image_to_window(mlx_data->mlx_ptr, mlx_data->win_ptr, mlx_data->img_ptr, 0, 0);
 	//mlx_mouse_hook(win_ptr, &mouse_key, my_image_string);
-	void	*params[2];
-	params[0] = &mlx_data;
-	params[1] = &maps;
-	mlx_key_hook(mlx_data->win_ptr, &deal_key, params);
+	params = (t_params*)malloc(sizeof(t_params));
+	params->mlx_data = mlx_data;
+	params->maps = maps;
+	mlx_hook(mlx_data->win_ptr, &deal_key, params);
 	mlx_loop(mlx_data->mlx_ptr);
 	return (0);
 }
