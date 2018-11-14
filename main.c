@@ -6,7 +6,7 @@
 /*   By: gvirga <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/02 13:14:43 by gvirga            #+#    #+#             */
-/*   Updated: 2018/11/14 20:33:10 by gvirga           ###   ########.fr       */
+/*   Updated: 2018/11/14 22:28:35 by gvirga           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,6 +88,25 @@ int		move_trans_map(t_map **map, int direction)
 	return(1);
 }
 
+int		move_z_value(t_map **map, int direction)
+{
+	int		i;
+	int		z0;
+	int		z1;
+
+	i = -1;
+	while (++i < (*map)->columns * (*map)->lines)
+	{
+		z0 = (*map)->default_map[i] * (*map)->distance_z;
+		if (direction == 0)
+			(*map)->distance_z -= 1;
+		else
+			(*map)->distance_z += 1;
+		z1 = (*map)->default_map[i] * (*map)->distance_z;
+		(*map)->trans_map[i * 3 + 1] += (z0 - z1);
+	}
+	return(1);
+}
 
 /*
  ** This manage all the octants, the magic is in the initiation of dx1 and dy1
@@ -199,13 +218,13 @@ int		redraw_map(t_mlx **mlx_data, t_map *maps)
 	return (1);
 }
 
-int		deal_key(int key, t_params *params)
+int		deal_key(int key, t_params **params)
 {
 	t_map	*maps;
 	t_mlx	*mlx_data;
 
-	maps = params->maps;
-	mlx_data = params->mlx_data;
+	maps = (*params)->maps;
+	mlx_data = (*params)->mlx_data;
 	if (key == 53)
 		exit(1);
 	else if (key >= 123 && key <= 126)
@@ -216,18 +235,18 @@ int		deal_key(int key, t_params *params)
 	return (0);
 }
 
-int		change_height(int key, t_params *params)
+int		change_height(int key, t_params **params)
 {
 	t_map	*maps;
 	t_mlx	*mlx_data;
 
-	maps = params->maps;
-	mlx_data = params->mlx_data;
-	if (key == 4)
+	maps = (*params)->maps;
+	mlx_data = (*params)->mlx_data;
+	if (key == 4 || key == 5)
 	{
-	
+		move_z_value(&maps, key - 4);
+		redraw_map(&mlx_data, maps);
 	}
-	printf("key: %d\n", key);
 	return (0);
 }
 
@@ -310,6 +329,7 @@ int		*fill_map(int nb_of_lines, int nb_of_columns, char *str, t_map **maps)
 	free(nbs_in_map);
 	return (default_map);
 }
+
 int		read_file(char **str, char *path_file)
 {
 	int		fd;
@@ -389,16 +409,7 @@ int			trans_map(t_map **maps, int width, int height)
 		z = (*maps)->default_map[i] * (*maps)->distance_z;
 		(*maps)->trans_map[i * 3] = x * cos(0.523599) - y * cos(0.523599);
 		(*maps)->trans_map[i * 3 + 1] = x * sin(0.523599) + y * sin(0.523599) - z;
-/*
-		if (z > 0)
-			(*maps)->trans_map[i * 3] = x * cos(0.523599) + y * sin(0.523599) + z * sin(2.0944);
-		else
-			(*maps)->trans_map[i * 3] = x * cos(0.523599) + y * sin(0.523599) - z * sin(2.0944);
-		if (z > 0)
-			(*maps)->trans_map[i * 3 + 1] = -(x * sin(0.523599)) + y * cos(0.523599) - z * cos(2.0944);
-		else
-			(*maps)->trans_map[i * 3 + 1] = -(x * sin(0.523599)) + y * cos(0.523599) + z * cos(2.0944);
-*/		(*maps)->trans_map[i * 3 + 2] = (*maps)->default_map[i];
+		(*maps)->trans_map[i * 3 + 2] = z;
 	}
 	return (1);
 }
@@ -513,10 +524,8 @@ int			main(int ac, char **av)
 	t_map		*maps;
 	t_params	*params;
 
-		printf("test\n");
 	if (ac != 2)
 		return (error_mng_args(ac));
-		printf("test\n");
 	// mlx initialisation of the mlx
 	if ((init_fdf(&mlx_data)) == -1 || (init_maps(&maps, av[1], &mlx_data)) == -1)
 		return (error_management("init_fdf() or init_map()", "initialisation"));
@@ -525,8 +534,9 @@ int			main(int ac, char **av)
 	params = (t_params*)malloc(sizeof(t_params));
 	params->mlx_data = mlx_data;
 	params->maps = maps;
-	mlx_mouse_hook(mlx_data->win_ptr, &change_height, params);
-	mlx_key_hook(mlx_data->win_ptr, &deal_key, params);
+	printf("params->maps: %p params->mlx_data: %p\n", params->maps, params->mlx_data);
+	mlx_key_hook(mlx_data->win_ptr, &deal_key, &params);
+	mlx_mouse_hook(mlx_data->win_ptr, &change_height, &params);
 	mlx_loop(mlx_data->mlx_ptr);
 	return (0);
 }
