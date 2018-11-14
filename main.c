@@ -6,7 +6,7 @@
 /*   By: gvirga <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/02 13:14:43 by gvirga            #+#    #+#             */
-/*   Updated: 2018/11/14 08:48:07 by gvirga           ###   ########.fr       */
+/*   Updated: 2018/11/14 15:06:31 by gvirga           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,6 +99,7 @@ void	draw_line(t_coord *coords, int *my_image_string)
 	int		curr_x;
 	int		curr_y;
 	int		pixel_pos;
+	int		color;
 
 	curr_y = (*coords).y0;
 	curr_x = (*coords).x0;
@@ -119,7 +120,7 @@ void	draw_line(t_coord *coords, int *my_image_string)
 	}
 	(*coords).error_margin = (*coords).width_size >> 1;
 	i = -1;
-	int color;
+	(*coords).color = (*coords).z1 - (*coords).z0;
 	while (++i <= (*coords).width_size)
 	{
 		pixel_pos = (int)(curr_y * WIN_WIDTH + curr_x);
@@ -274,20 +275,20 @@ int		*fill_map(int nb_of_lines, int nb_of_columns, char *str)
 {
 	int		*default_map;
 	int		i;
-	char	**nbs_of_map;
+	char	**nbs_in_map;
 
 	i = -1;
 	default_map = (int*)malloc(sizeof(int) * nb_of_lines * nb_of_columns);
 	if (!default_map)
 		return (NULL);
-	if (!(nbs_of_map = ft_strsplit2(str, ' ', '\n')))
+	if (!(nbs_in_map = ft_strsplit2(str, ' ', '\n')))
 		return (NULL);
 	while (++i < nb_of_columns * nb_of_lines)
 	{
-		default_map[i] = ft_atoi(nbs_of_map[i]);
-		free(nbs_of_map[i]);
+		default_map[i] = ft_atoi(nbs_in_map[i]);
+		free(nbs_in_map[i]);
 	}
-	free(nbs_of_map);
+	free(nbs_in_map);
 	return (default_map);
 }
 int		read_file(char **str, char *path_file)
@@ -339,7 +340,7 @@ int		read_map(char *path_file, t_map **maps)
 ** for the width and height of the mlx_window
 */
 
-int		trans_map(t_map **maps, int width, int height)
+int			trans_map(t_map **maps, int width, int height)
 {
 	int		i;
 	int		lines;
@@ -375,7 +376,31 @@ int		trans_map(t_map **maps, int width, int height)
 	return (1);
 }
 
-int		draw_map(t_mlx **mlx_data, t_map *maps)
+void		coords_x_axis(t_coord *coords, t_map *maps, int i)
+{
+	(*coords).x0 = maps->trans_map[i * 3];
+	(*coords).x1 = maps->trans_map[(i + 1) * 3];
+	(*coords).y0 = maps->trans_map[i * 3 + 1];
+	(*coords).y1 = maps->trans_map[(i + 1) * 3 + 1];
+	(*coords).z0 = maps->trans_map[i * 3 + 2];
+	(*coords).z1 = maps->trans_map[(i + 1) * 3 + 2];
+}
+
+void		coords_y_axis(t_coord *coords, t_map *maps, int i)
+{
+	(*coords).x0 = maps->trans_map[i * 3];
+	(*coords).x1 = maps->trans_map[(i + maps->columns) * 3];
+	(*coords).y0 = maps->trans_map[i * 3 + 1];
+	(*coords).y1 = maps->trans_map[(i + maps->columns) * 3 + 1];
+	(*coords).z0 = maps->trans_map[i * 3 + 2];
+	(*coords).z1 = maps->trans_map[(i + maps->columns) * 3 + 2];
+}
+
+/*
+**	The coordinations changed when we are drawing a line between two points from
+**	the x axis or a line between two points from the y axis
+*/
+int			draw_map(t_mlx **mlx_data, t_map *maps)
 {
 	int		display_size[2];
 	int		i;
@@ -389,7 +414,7 @@ int		draw_map(t_mlx **mlx_data, t_map *maps)
 	i = -1;
 	display_size[0] = (*mlx_data)->win_width;
 	display_size[1] = (*mlx_data)->win_height;
-	(*mlx_data)->img_ptr = mlx_new_image((*mlx_data)->mlx_ptr, display_size[0], display_size[1]);
+	(*mlx_data)->img_ptr = mlx_new_image((*mlx_data)->mlx_ptr, (*mlx_data)->win_width, (*mlx_data)->win_height);
 	// Obtention de la string que represente l'image
 	my_image_string = (int*)mlx_get_data_addr((*mlx_data)->img_ptr, &bpp, &size_line, &endian);
 	i = -1;
@@ -397,61 +422,84 @@ int		draw_map(t_mlx **mlx_data, t_map *maps)
 	{
 		if ((i + 1) % maps->columns != 0)
 		{
-			coords.x0 = maps->trans_map[i * 3];
-			coords.x1 = maps->trans_map[(i + 1) * 3];
-			coords.y0 = maps->trans_map[i * 3 + 1];
-			coords.y1 = maps->trans_map[(i + 1) * 3 + 1];
-			coords.z0 = maps->trans_map[i * 3 + 2];
-			coords.z1 = maps->trans_map[(i + 1) * 3 + 2];
+			coords_x_axis(&coords, maps, i);
 			draw_line(&coords, my_image_string);
 		}
 		if (i + maps->columns < maps->columns * maps->lines)
 		{
-			coords.x0 = maps->trans_map[i * 3];
-			coords.x1 = maps->trans_map[(i + maps->columns) * 3];
-			coords.y0 = maps->trans_map[i * 3 + 1];
-			coords.y1 = maps->trans_map[(i + maps->columns) * 3 + 1];
-			coords.z0 = maps->trans_map[i * 3 + 2];
-			coords.z1 = maps->trans_map[(i + maps->columns) * 3 + 2];
+			coords_y_axis(&coords, maps, i);
 			draw_line(&coords, my_image_string);
 		}
 	}
 	return (1);
 }
+int			init_fdf(t_mlx **mlx_data)
+{
+	if (!((*mlx_data) = (t_mlx*)malloc(sizeof(t_mlx))))
+		return (error_management("mlx_data", "malloc"));
+	if (!((*mlx_data)->mlx_ptr = mlx_init()))
+		return (error_management("mlx_data->mlx_ptr", "mlx_init()"));
+	(*mlx_data)->win_width = 1280;
+	(*mlx_data)->win_height = 720;
+	if (!((*mlx_data)->win_ptr = mlx_new_window((*mlx_data)->mlx_ptr,
+					(*mlx_data)->win_width, (*mlx_data)->win_height, "42")))
+		return (error_management("mlx_data->win_ptr", "new_window()"));
+	return (1);
+}
 
-int		main(int ac, char **av)
+int			init_maps(t_map **maps, char *path_file, t_mlx **mlx_data)
+{
+	if (!((*maps) = (t_map*)malloc(sizeof(t_map))))
+		return (error_management("maps", "malloc"));
+	if ((read_map(path_file, maps) < 0))
+		return (error_management("default_map", "read_map()"));
+	if (!(trans_map(maps, (*mlx_data)->win_width, (*mlx_data)->win_height)))
+		return (error_management("trans_map", "trans_map()"));
+	return (1);
+}
+
+int			error_mng_args(int ac)
+{
+	if (ac < 2)
+		ft_putstr("To use fdf you need to give the path to the fdf file. Example: ./fdf maps/42.fdf");
+	else
+		ft_putstr("Fdf can manage only one file at the time.");
+	return (-1);
+}
+
+int			error_mng_text(char *text)
+{
+	ft_putstr(text);
+	return (-1);
+}
+
+int			render(t_mlx **mlx_data, t_map *maps)
+{
+	if ((draw_map(mlx_data, maps)) == -1)
+		return (error_management("draw_map()", "drawing"));
+	mlx_put_image_to_window((*mlx_data)->mlx_ptr,
+		(*mlx_data)->win_ptr, (*mlx_data)->img_ptr, 0, 0);
+	return (1);
+}
+
+int			main(int ac, char **av)
 {
 	t_mlx		*mlx_data;
 	t_map		*maps;
 	t_params	*params;
-	int		i;
 
 	if (ac != 2)
-		return (-1);
+		return (error_mng_args(ac));
 	// mlx initialisation of the mlx
-	if (!(mlx_data = (t_mlx*)malloc(sizeof(t_mlx))))
-		return (error_management("mlx_data", "malloc"));
-	if (!(mlx_data->mlx_ptr = mlx_init()))
-		return (error_management("mlx_data->mlx_ptr", "mlx_init()"));
-	mlx_data->win_width = 1280;
-	mlx_data->win_height = 720;
-	if (!(mlx_data->win_ptr = mlx_new_window(mlx_data->mlx_ptr,
-					mlx_data->win_width, mlx_data->win_height, "42")))
-		return (error_management("mlx_data->win_ptr", "new_window()"));
-	// Filling the =! types of map
-	if (!(maps = (t_map*)malloc(sizeof(t_map))))
-		return (error_management("maps", "malloc"));
-	if ((read_map(av[1], &maps) < 0))
-		return (error_management("default_map", "read_map()"));
-	if (!(trans_map(&maps, mlx_data->win_width, mlx_data->win_height)))
-		return (error_management("trans_map", "trans_map()"));
-	draw_map(&mlx_data, maps);
-	mlx_put_image_to_window(mlx_data->mlx_ptr, mlx_data->win_ptr, mlx_data->img_ptr, 0, 0);
+	if ((init_fdf(&mlx_data)) == -1 || (init_maps(&maps, av[1], &mlx_data)) == -1)
+		return (error_management("init_fdf() or init_map()", "initialisation"));
+	if ((render(&mlx_data, maps)) == -1)
+		return (error_mng_text("Something went wrong in the rendering"));
 	//mlx_mouse_hook(win_ptr, &mouse_key, my_image_string);
 	params = (t_params*)malloc(sizeof(t_params));
 	params->mlx_data = mlx_data;
 	params->maps = maps;
-	mlx_hook(mlx_data->win_ptr, &deal_key, params);
+	mlx_key_hook(mlx_data->win_ptr, &deal_key, params);
 	mlx_loop(mlx_data->mlx_ptr);
 	return (0);
 }
