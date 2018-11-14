@@ -6,7 +6,7 @@
 /*   By: gvirga <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/02 13:14:43 by gvirga            #+#    #+#             */
-/*   Updated: 2018/11/14 22:28:35 by gvirga           ###   ########.fr       */
+/*   Updated: 2018/11/14 22:47:13 by gvirga           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -536,7 +536,7 @@ int			main(int ac, char **av)
 	params->maps = maps;
 	printf("params->maps: %p params->mlx_data: %p\n", params->maps, params->mlx_data);
 	mlx_key_hook(mlx_data->win_ptr, &deal_key, &params);
-	mlx_mouse_hook(mlx_data->win_ptr, &change_height, &params);
+	mlx_hook(mlx_data->mlx_ptr, &change_height, &params);
 	mlx_loop(mlx_data->mlx_ptr);
 	return (0);
 }
