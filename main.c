@@ -6,7 +6,7 @@
 /*   By: gvirga <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/02 13:14:43 by gvirga            #+#    #+#             */
-/*   Updated: 2018/11/14 23:14:34 by gvirga           ###   ########.fr       */
+/*   Updated: 2018/11/15 18:37:29 by gvirga           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,10 @@ typedef struct			s_coord
 	int		height_size;
 	int		width;
 	int		height;
-	int		color;
+	int		lowest_color;
+	int		highest_color;
+	int		highest_point;
+	int		lowest_point;
 	int		z0;
 	int		z1;
 }						t_coord;
@@ -140,25 +143,15 @@ void	draw_line(t_coord *coords, int *my_image_string, int win_width, int win_hei
 	}
 	(*coords).error_margin = (*coords).width_size >> 1;
 	i = -1;
-	(*coords).color = (*coords).z1 - (*coords).z0;
+	(*coords).lowest_color = 0xFFFFFF;
+	(*coords).highest_color = 0x0000FF;
 	while (++i <= (*coords).width_size)
 	{
 		pixel_pos = (int)(curr_y * WIN_WIDTH + curr_x);
 		if ((pixel_pos >= 0 && pixel_pos < WIN_WIDTH * WIN_HEIGHT) && curr_x < WIN_WIDTH && curr_x > 0 && curr_y > 0 && curr_y < WIN_HEIGHT)
 		{
-			if ((*coords).color >= 3)
-				color = 0xFFFFFF;
-			else if ((*coords).color < 0)
-				color = 0xFFFFFF;
-			else
-			{
-				if ((*coords).z0 >= 3)
-					color = 0xFFFFFF;
-				else if ((*coords).z0 < 0)
-					color = 0x0000FF;
-				else
-					color = 0x00FF00;
-			}
+			if ((*coords).z0 != (*coords).lowest_point || (*coords).z0 != (*coords).highest_point)
+				color = (*coords).highest_color + (((*coords).highest_point - (*coords).z0) * 0x0001FF);  
 			my_image_string[pixel_pos] = color;
 		}
 		(*coords).error_margin += (*coords).height_size;
@@ -454,6 +447,8 @@ int			draw_map(t_mlx **mlx_data, t_map *maps)
 	// Obtention de la string que represente l'image
 	my_image_string = (int*)mlx_get_data_addr((*mlx_data)->img_ptr, &bpp, &size_line, &endian);
 	i = -1;
+	coords.lowest_point = maps->lowest_point;
+	coords.highest_point = maps->highest_point;
 	while (++i < maps->lines * maps->columns)
 	{
 		if ((i + 1) % maps->columns != 0)
