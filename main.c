@@ -6,7 +6,7 @@
 /*   By: gvirga <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/02 13:14:43 by gvirga            #+#    #+#             */
-/*   Updated: 2018/11/15 18:37:29 by gvirga           ###   ########.fr       */
+/*   Updated: 2018/11/15 22:54:33 by gvirga           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -151,7 +151,9 @@ void	draw_line(t_coord *coords, int *my_image_string, int win_width, int win_hei
 		if ((pixel_pos >= 0 && pixel_pos < WIN_WIDTH * WIN_HEIGHT) && curr_x < WIN_WIDTH && curr_x > 0 && curr_y > 0 && curr_y < WIN_HEIGHT)
 		{
 			if ((*coords).z0 != (*coords).lowest_point || (*coords).z0 != (*coords).highest_point)
-				color = (*coords).highest_color + (((*coords).highest_point - (*coords).z0) * 0x0001FF);  
+				color = (*coords).highest_color + (((*coords).highest_point - (*coords).z0) * 256);  
+			if (color > 0xFFFFFF)
+				color = 0xFFFFFF;
 			my_image_string[pixel_pos] = color;
 		}
 		(*coords).error_margin += (*coords).height_size;
