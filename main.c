@@ -6,7 +6,7 @@
 /*   By: gvirga <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/02 13:14:43 by gvirga            #+#    #+#             */
-/*   Updated: 2018/11/15 22:54:33 by gvirga           ###   ########.fr       */
+/*   Updated: 2018/11/17 16:48:28 by gvirga           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -144,14 +144,16 @@ void	draw_line(t_coord *coords, int *my_image_string, int win_width, int win_hei
 	(*coords).error_margin = (*coords).width_size >> 1;
 	i = -1;
 	(*coords).lowest_color = 0xFFFFFF;
-	(*coords).highest_color = 0x0000FF;
+	(*coords).highest_color = 0xFF0000;
 	while (++i <= (*coords).width_size)
 	{
 		pixel_pos = (int)(curr_y * WIN_WIDTH + curr_x);
 		if ((pixel_pos >= 0 && pixel_pos < WIN_WIDTH * WIN_HEIGHT) && curr_x < WIN_WIDTH && curr_x > 0 && curr_y > 0 && curr_y < WIN_HEIGHT)
 		{
 			if ((*coords).z0 != (*coords).lowest_point || (*coords).z0 != (*coords).highest_point)
-				color = (*coords).highest_color + (((*coords).highest_point - (*coords).z0) * 256);  
+				color = (*coords).highest_color + (((*coords).highest_point - (*coords).z0) * 1);  
+			else
+				color = 0xFFFFFF;
 			if (color > 0xFFFFFF)
 				color = 0xFFFFFF;
 			my_image_string[pixel_pos] = color;
@@ -196,6 +198,8 @@ int		redraw_map(t_mlx **mlx_data, t_map *maps)
 			coords.y1 = maps->trans_map[(i + 1) * 3 + 1];
 			coords.z0 = maps->trans_map[i * 3 + 2];
 			coords.z1 = maps->trans_map[(i + 1) * 3 + 2];
+			coords.highest_point = maps->highest_point;
+			coords.lowest_point = maps->lowest_point;
 			draw_line(&coords, my_image_string, (*mlx_data)->win_width, (*mlx_data)->win_height);
 		}
 		if (i + maps->columns < maps->columns * maps->lines)
@@ -206,6 +210,8 @@ int		redraw_map(t_mlx **mlx_data, t_map *maps)
 			coords.y1 = maps->trans_map[(i + maps->columns) * 3 + 1];
 			coords.z0 = maps->trans_map[i * 3 + 2];
 			coords.z1 = maps->trans_map[(i + maps->columns) * 3 + 2];
+			coords.highest_point = maps->highest_point;
+			coords.lowest_point = maps->lowest_point;
 			draw_line(&coords, my_image_string, (*mlx_data)->win_width, (*mlx_data)->win_height);
 		}
 	}
