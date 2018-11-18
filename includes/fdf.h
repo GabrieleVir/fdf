@@ -6,14 +6,15 @@
 /*   By: gvirga <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/24 23:06:18 by gvirga            #+#    #+#             */
-/*   Updated: 2018/10/24 23:07:19 by gvirga           ###   ########.fr       */
+/*   Updated: 2018/11/18 01:29:21 by gvirga           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef FDF_H
 # define FDF_H
 
-#include <fcntl.h>
-#include "mlx.h"
-
+# include <fcntl.h>
+# include "mlx.h"
+# include "libft.h"
+# define BUFF_SIZE 10000
 #endif

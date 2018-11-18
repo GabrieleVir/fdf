@@ -6,12 +6,11 @@
 /*   By: gvirga <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/02 13:14:43 by gvirga            #+#    #+#             */
-/*   Updated: 2018/11/17 16:48:28 by gvirga           ###   ########.fr       */
+/*   Updated: 2018/11/18 03:04:22 by gvirga           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "fdf.h"
-#include "./gnl/get_next_line.h"
 #include <stdio.h>
 #include <math.h>
 
@@ -144,17 +143,17 @@ void	draw_line(t_coord *coords, int *my_image_string, int win_width, int win_hei
 	(*coords).error_margin = (*coords).width_size >> 1;
 	i = -1;
 	(*coords).lowest_color = 0xFFFFFF;
-	(*coords).highest_color = 0xFF0000;
+	(*coords).highest_color = 0x0000FF;
 	while (++i <= (*coords).width_size)
 	{
 		pixel_pos = (int)(curr_y * WIN_WIDTH + curr_x);
 		if ((pixel_pos >= 0 && pixel_pos < WIN_WIDTH * WIN_HEIGHT) && curr_x < WIN_WIDTH && curr_x > 0 && curr_y > 0 && curr_y < WIN_HEIGHT)
 		{
 			if ((*coords).z0 != (*coords).lowest_point || (*coords).z0 != (*coords).highest_point)
-				color = (*coords).highest_color + (((*coords).highest_point - (*coords).z0) * 1);  
+				color = (*coords).highest_color + (((*coords).highest_point - (*coords).z0) * 256);  
 			else
 				color = 0xFFFFFF;
-			if (color > 0xFFFFFF)
+			if (color < 0x0000FF)
 				color = 0xFFFFFF;
 			my_image_string[pixel_pos] = color;
 		}
@@ -397,11 +396,13 @@ int			trans_map(t_map **maps, int width, int height)
 	columns = (*maps)->columns;
 	i = -1;
 	if (((*maps)->distance_x = width / (columns * 4)) < 10)
-		(*maps)->distance_x = 10;
+		(*maps)->distance_x = 5;
 	if (((*maps)->distance_y = height / (lines * 4)) < 10)
-		(*maps)->distance_y = 10;
-	if (dz == 0 || ((*maps)->distance_z = height / (dz * 4)) < 10)
-		(*maps)->distance_z = 1;
+		(*maps)->distance_y = 5;
+	if (((*maps)->highest_point + (*maps)->lowest_point) > (*maps)->distance_y)
+		(*maps)->distance_z = 5;
+	else
+		(*maps)->distance_z = 10;
 	if (!((*maps)->trans_map = (int*)malloc(sizeof(int) * lines * columns * 3)))
 		return (error_management("trans_map", "malloc"));
 	while (++i < lines * columns)
