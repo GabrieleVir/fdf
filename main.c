@@ -6,7 +6,7 @@
 /*   By: gvirga <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/02 13:14:43 by gvirga            #+#    #+#             */
-/*   Updated: 2018/11/18 03:04:22 by gvirga           ###   ########.fr       */
+/*   Updated: 2018/11/22 11:45:42 by gvirga           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,6 +110,30 @@ int		move_z_value(t_map **map, int direction)
 	return(1);
 }
 
+void	zoom(t_map **map, int zoom)
+{
+	int		i;
+
+	i = -1;
+	if (zoom == 69)
+	{
+		while (++i < (*map)->columns * (*map)->lines)
+		{
+			(*map)->trans_map[i * 3] += 10;
+			(*map)->trans_map[i * 3 + 1] += 10;
+		}
+	}
+	else
+	{
+		while (++i < (*map)->columns * (*map)->lines)
+		{
+			(*map)->trans_map[i * 3] += 10;
+			(*map)->trans_map[i * 3 + 1] += 10;
+		}
+	
+	}
+}
+
 /*
  ** This manage all the octants, the magic is in the initiation of dx1 and dy1
  ** Need to add limits
@@ -146,8 +170,8 @@ void	draw_line(t_coord *coords, int *my_image_string, int win_width, int win_hei
 	(*coords).highest_color = 0x0000FF;
 	while (++i <= (*coords).width_size)
 	{
-		pixel_pos = (int)(curr_y * WIN_WIDTH + curr_x);
-		if ((pixel_pos >= 0 && pixel_pos < WIN_WIDTH * WIN_HEIGHT) && curr_x < WIN_WIDTH && curr_x > 0 && curr_y > 0 && curr_y < WIN_HEIGHT)
+		pixel_pos = (int)(curr_y * win_width + curr_x);
+		if ((pixel_pos >= 0 && pixel_pos < win_width * win_height) && curr_x < win_width && curr_x > 0 && curr_y > 0 && curr_y < win_height)
 		{
 			if ((*coords).z0 != (*coords).lowest_point || (*coords).z0 != (*coords).highest_point)
 				color = (*coords).highest_color + (((*coords).highest_point - (*coords).z0) * 256);  
@@ -175,7 +199,6 @@ void	draw_line(t_coord *coords, int *my_image_string, int win_width, int win_hei
 int		redraw_map(t_mlx **mlx_data, t_map *maps)
 {
 	int		i;
-	int		starting_y;
 	int		bpp;
 	int		size_line;
 	int		endian;
@@ -225,11 +248,17 @@ int		deal_key(int key, t_params *params)
 
 	maps = params->maps;
 	mlx_data = params->mlx_data;
+	printf("key: %d", key);
 	if (key == 53)
 		exit(1);
 	else if (key >= 123 && key <= 126)
 	{
 		move_trans_map(&maps, key - 123);
+		redraw_map(&mlx_data, maps);
+	}
+	else if (key == 69 || key == 78)
+	{
+		zoom(&maps, key);
 		redraw_map(&mlx_data, maps);
 	}
 	return (0);
