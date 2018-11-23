@@ -6,7 +6,7 @@
 /*   By: gvirga <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/02 13:14:43 by gvirga            #+#    #+#             */
-/*   Updated: 2018/11/22 11:45:42 by gvirga           ###   ########.fr       */
+/*   Updated: 2018/11/23 00:26:39 by gvirga           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,7 +68,13 @@ typedef struct			s_params
 	t_mlx				*mlx_data;
 }						t_params;
 
-int		move_trans_map(t_map **map, int direction)
+int			error_mng_text(char *text)
+{
+	ft_putstr(text);
+	return (-1);
+}
+
+void	move_trans_map(t_map **map, int direction)
 {
 	int		i;
 
@@ -86,11 +92,10 @@ int		move_trans_map(t_map **map, int direction)
 	{
 		while (++i < (*map)->columns * (*map)->lines)
 			(*map)->trans_map[i * 3 + 1] -= 100;
-	}	
-	return(1);
+	}
 }
 
-int		move_z_value(t_map **map, int direction)
+void	move_z_value(t_map **map, int direction)
 {
 	int		i;
 	int		z0;
@@ -107,31 +112,40 @@ int		move_z_value(t_map **map, int direction)
 		z1 = (*map)->default_map[i] * (*map)->distance_z;
 		(*map)->trans_map[i * 3 + 1] += (z0 - z1);
 	}
-	return(1);
 }
 
-void	zoom(t_map **map, int zoom)
+int		zoom(t_map **map, int zoom)
 {
 	int		i;
+	static int max_zoom = 0;
+	static int min_zoom = 0;
 
 	i = -1;
 	if (zoom == 69)
 	{
-		while (++i < (*map)->columns * (*map)->lines)
-		{
-			(*map)->trans_map[i * 3] += 10;
-			(*map)->trans_map[i * 3 + 1] += 10;
-		}
+		max_zoom++;
+		if (max_zoom < 3)
+			while (++i < (*map)->columns * (*map)->lines)
+			{
+				(*map)->trans_map[i * 3] *= 2;
+				(*map)->trans_map[i * 3 + 1] *= 2;
+			}
+		else
+			return (-1);
 	}
 	else
 	{
-		while (++i < (*map)->columns * (*map)->lines)
-		{
-			(*map)->trans_map[i * 3] += 10;
-			(*map)->trans_map[i * 3 + 1] += 10;
-		}
-	
+		min_zoom++;
+		if (min_zoom < 3)
+			while (++i < (*map)->columns * (*map)->lines)
+			{
+				(*map)->trans_map[i * 3] /= 2;
+				(*map)->trans_map[i * 3 + 1] /= 2;
+			}
+		else
+			return (-1);
 	}
+	return (1);
 }
 
 /*
@@ -248,7 +262,6 @@ int		deal_key(int key, t_params *params)
 
 	maps = params->maps;
 	mlx_data = params->mlx_data;
-	printf("key: %d", key);
 	if (key == 53)
 		exit(1);
 	else if (key >= 123 && key <= 126)
@@ -258,8 +271,8 @@ int		deal_key(int key, t_params *params)
 	}
 	else if (key == 69 || key == 78)
 	{
-		zoom(&maps, key);
-		redraw_map(&mlx_data, maps);
+		if (zoom(&maps, key))
+			redraw_map(&mlx_data, maps);
 	}
 	return (0);
 }
@@ -537,12 +550,6 @@ int			error_mng_args(int ac)
 	return (-1);
 }
 
-int			error_mng_text(char *text)
-{
-	ft_putstr(text);
-	return (-1);
-}
-
 int			render(t_mlx **mlx_data, t_map *maps)
 {
 	if ((draw_map(mlx_data, maps)) == -1)
@@ -568,7 +575,6 @@ int			main(int ac, char **av)
 	params = (t_params*)malloc(sizeof(t_params));
 	params->mlx_data = mlx_data;
 	params->maps = maps;
-	printf("params->maps: %p params->mlx_data: %p\n", params->maps, params->mlx_data);
 	mlx_key_hook(mlx_data->win_ptr, &deal_key, params);
 	mlx_mouse_hook(mlx_data->win_ptr, &change_height, params);
 	mlx_loop(mlx_data->mlx_ptr);
