@@ -6,7 +6,7 @@
 /*   By: gvirga <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/02/25 23:24:51 by gvirga            #+#    #+#             */
-/*   Updated: 2019/03/07 15:33:07 by gvirga           ###   ########.fr       */
+/*   Updated: 2019/03/07 15:35:59 by gvirga           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ int		mlx_starting()
 {
 	t_mlx		m_i;
 
-	m_i.
+	m_i.mlx_ptr = mlx_init();
 }
 
 int		starting_with_the_basics()
