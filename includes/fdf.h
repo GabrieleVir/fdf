@@ -6,7 +6,7 @@
 /*   By: gvirga <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/02/27 07:09:57 by gvirga            #+#    #+#             */
-/*   Updated: 2019/03/07 21:03:40 by gvirga           ###   ########.fr       */
+/*   Updated: 2019/03/07 23:21:09 by gvirga           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,8 +29,11 @@ typedef struct				s_file
 typedef struct				s_data
 {
 	int						origin;
-	int						nb_column;
+	size_t					nb_column;
+	size_t					nb_row;
+	size_t					nb_of_elems;
 	char					*data;
+	intmax_t				*z_arr;
 }							t_data;
 
 typedef struct				s_mlx
@@ -41,7 +44,7 @@ typedef struct				s_mlx
 int				starting_with_the_basics();
 int				error_msg(int error);
 int				read_file(t_data **maps_info, char *file_name);
-int				fill_info(t_data **maps_info);
 int				usage_error_msg();
+int				length_error_msg();
 
 #endif

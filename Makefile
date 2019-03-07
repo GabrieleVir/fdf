@@ -6,7 +6,7 @@
 #    By: gvirga <marvin@42.fr>                      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2018/06/12 23:31:55 by gvirga            #+#    #+#              #
-#    Updated: 2019/03/07 18:12:57 by gvirga           ###   ########.fr        #
+#    Updated: 2019/03/07 23:22:34 by gvirga           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -16,7 +16,7 @@ LIBFT_DIR =libft/
 LIBFT =libft.a
 SRCDIR=srcs/
 CC =gcc
-CFLAGS =-Wall -Werror -Wextra
+CFLAGS =-Wall -Werror -Wextra -g
 MAIN =main.c
 FILES =errors.c read_and_fill.c
 SRCFILES =$(addprefix $(SRCDIR), $(FILES))

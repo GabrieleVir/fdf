@@ -6,18 +6,73 @@
 /*   By: gvirga <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/07 16:23:15 by gvirga            #+#    #+#             */
-/*   Updated: 2019/03/07 21:13:19 by gvirga           ###   ########.fr       */
+/*   Updated: 2019/03/07 23:21:12 by gvirga           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "fdf.h"
 
-int		fill_info(t_data **maps_info)
+static int		fill_z_arr(t_data **m_i, char *row, size_t i)
 {
-	return (0);
+	size_t		u;
+
+	u = 0 + (i * (*m_i)->nb_column);
+	while (*row)
+	{
+		while (*row == ' ')
+			row++;
+		if (*row == '\0')
+			break ;
+		((*m_i)->z_arr)[u] = ft_atoi(row);
+		u++;
+		while (*row && *row != ' ')
+			row++;
+	}
+	return (1);
 }
 
-int		read_file(t_data **maps_info, char *file_name)
+static void		garbage_collector(char **data, char ***tmp_map, size_t nb_r)
+{
+	size_t		u;
+
+	u = 0;
+	while (u < nb_r)
+	{
+		free((*tmp_map)[u]);
+		u++;
+	}
+	free(*tmp_map);
+	free(*data);
+	*data = NULL;
+}
+
+static int		fill_info(t_data **maps_info)
+{
+	size_t		i;
+	char		**tmp_map;
+
+	i = 0;
+	(*maps_info)->nb_row = ft_wordcount((*maps_info)->data, '\n');
+	if (!(tmp_map = ft_strsplit((*maps_info)->data, '\n')))
+		return (error_msg(12));
+	(*maps_info)->nb_column = ft_wordcount(tmp_map[0], ' ');
+	(*maps_info)->nb_of_elems = (*maps_info)->nb_row * (*maps_info)->nb_column;
+	if (!((*maps_info)->z_arr = (intmax_t *)malloc(sizeof(intmax_t) *
+			(*maps_info)->nb_of_elems)))
+		return (error_msg(12));
+	while (i < (*maps_info)->nb_row)
+	{
+		if ((*maps_info)->nb_column != ft_wordcount(tmp_map[i], ' '))
+			return (length_error_msg(&tmp_map, maps_info));
+		if (!(fill_z_arr(maps_info, tmp_map[i], i)))
+			return (error_msg(12));
+		i++;
+	}
+	garbage_collector(&((*maps_info)->data), &tmp_map, (*maps_info)->nb_row);
+	return (1);
+}
+
+int				read_file(t_data **maps_info, char *file_name)
 {
 	t_file		file;
 
