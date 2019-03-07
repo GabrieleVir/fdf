@@ -6,7 +6,7 @@
 /*   By: gvirga <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/02/25 23:24:51 by gvirga            #+#    #+#             */
-/*   Updated: 2019/02/27 07:31:03 by gvirga           ###   ########.fr       */
+/*   Updated: 2019/03/07 15:33:07 by gvirga           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,8 +24,16 @@ int		error_msg(int error)
 	return (-1);
 }
 
+int		mlx_starting()
+{
+	t_mlx		m_i;
+
+	m_i.
+}
+
 int		starting_with_the_basics()
 {
+	
 	return (0);
 }
 
@@ -33,7 +41,7 @@ int		main(int ac, char **av)
 {
 	if (ac == 1)
 		return (error_msg(2));
-	if (starting_with_the_basics())
+	if (mlx_starting())
 	{
 	
 	}
