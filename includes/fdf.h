@@ -6,7 +6,7 @@
 /*   By: gvirga <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/02/27 07:09:57 by gvirga            #+#    #+#             */
-/*   Updated: 2019/03/07 23:21:09 by gvirga           ###   ########.fr       */
+/*   Updated: 2019/03/14 06:16:34 by gvirga           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,12 @@ typedef struct				s_file
 	char					buf[BUFF_SIZE + 1];
 }							t_file;
 
+typedef struct				s_mlx
+{
+	void					*mlx_ptr;
+	int						*mlx_img;
+}							t_mlx;
+
 typedef struct				s_data
 {
 	int						origin;
@@ -34,12 +40,8 @@ typedef struct				s_data
 	size_t					nb_of_elems;
 	char					*data;
 	intmax_t				*z_arr;
+	t_mlx					*mlx_data;
 }							t_data;
-
-typedef struct				s_mlx
-{
-	void					*mlx_ptr;
-}							t_mlx;
 
 int				starting_with_the_basics();
 int				error_msg(int error);
