@@ -6,13 +6,15 @@
 /*   By: gvirga <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/02/27 07:09:57 by gvirga            #+#    #+#             */
-/*   Updated: 2019/03/14 06:16:34 by gvirga           ###   ########.fr       */
+/*   Updated: 2019/03/17 17:30:16 by gvirga           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 
 #ifndef FDF_H
 # define BUFF_SIZE 1000
+# define WIDTH 1920
+# define HEIGHT 1080
 
 # include "libft.h"
 # include "mlx.h"
@@ -30,6 +32,7 @@ typedef struct				s_mlx
 {
 	void					*mlx_ptr;
 	int						*mlx_img;
+	int						*img_add;
 }							t_mlx;
 
 typedef struct				s_data

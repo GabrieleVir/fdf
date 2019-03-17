@@ -6,15 +6,17 @@
 /*   By: gvirga <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/02/25 23:24:51 by gvirga            #+#    #+#             */
-/*   Updated: 2019/03/14 04:04:49 by gvirga           ###   ########.fr       */
+/*   Updated: 2019/03/17 17:28:51 by gvirga           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "fdf.h"
 
+
 int		mlx_starting(t_mlx **m_i)
 {
 	(*m_i)->mlx_ptr = mlx_init();
+	(*m_i)->mlx_img = mlx_new_image((*m_i)->mlx_ptr, WIDTH, HEIGHT);
 	return (0);
 }
 
