@@ -6,19 +6,21 @@
 #    By: gvirga <marvin@42.fr>                      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2018/06/12 23:31:55 by gvirga            #+#    #+#              #
-#    Updated: 2019/03/07 23:22:34 by gvirga           ###   ########.fr        #
+#    Updated: 2019/03/19 02:57:46 by gvirga           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME =fdf
 
 LIBFT_DIR =libft/
-LIBFT =libft.a
+LIBS =libft.a libmlx.a
+LIBSDIR=libs/
+LIBSPATH =$(addprefix $(LIBSDIR), $(LIBS))
 SRCDIR=srcs/
 CC =gcc
 CFLAGS =-Wall -Werror -Wextra -g
 MAIN =main.c
-FILES =errors.c read_and_fill.c
+FILES =errors_read.c read_and_fill.c errors_mlx.c
 SRCFILES =$(addprefix $(SRCDIR), $(FILES))
 OBJ=$(subst .c,.o, $(FILES)) main.o
 SRCOBJ =$(addprefix $(SRCDIR), $(OBJ))
@@ -64,11 +66,12 @@ all: $(NAME)
 $(NAME): $(OBJ)
 	@echo "$(YELLOW)Checking updates in the libs$(END)"
 	@make -C $(LIBFT_DIR)
+	@cp $(LIBFT_DIR)libft.a libs/
 	@echo "$(CYAN)Building the fdf executable$(END)"
-	gcc $(CFLAGS) -o $@$(OBJ) $(LIBFT_DIR)$(LIBFT) $(FRAMEWORKS_CMD)
+	gcc $(CFLAGS) -o $@$(OBJ) $(LIBSPATH) $(FRAMEWORKS_CMD)
 	@echo "$(GREEN)SUCCESS$(END)"
 
-$(OBJ): $(SRCFILES)
+$(OBJ): $(SRCFILES) $(MAIN)
 	@echo "$(CYAN)Compilation of source files for $(NAME) executable...$(END)"
 	@$(CC) $(CFLAGS) $(MAIN) -c $(SRCFILES) -I $(INC_DIR)
 

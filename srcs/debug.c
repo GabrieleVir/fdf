@@ -1,27 +1,26 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   errors_mlx.c                                       :+:      :+:    :+:   */
+/*   debug.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: gvirga <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2019/03/15 01:49:05 by gvirga            #+#    #+#             */
-/*   Updated: 2019/03/17 23:37:17 by gvirga           ###   ########.fr       */
+/*   Created: 2019/03/19 03:26:29 by gvirga            #+#    #+#             */
+/*   Updated: 2019/03/19 03:27:54 by gvirga           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-/*
-** Errors when I manage the mlx functions
-*/
 #include "fdf.h"
 
-int			errors_mlx(char *fct_name_error, int frees, t_mlx **m_i)
+void		show_z_arr(t_data **maps_info)
 {
-	if (frees == 1)
-		free((*m_i)->mlx_ptr);
-	ft_putstr("Error: ");
-	ft_putstr("The function ");
-	ft_putstr(fct_name_error);
-	ft_putstr(" didn't succeed\n");
-	return (0);
+	int		i;
+
+	i = -1;
+	while (++i < (*maps_info)->nb_of_elems)
+	{
+		ft_putnbr(((*maps_info)->z_arr)[i]);
+		if (i != 0 && (i + 1) % (*maps_info)->nb_column == 0)
+			ft_putchar('\n');
+	}
 }
