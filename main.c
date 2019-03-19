@@ -6,7 +6,7 @@
 /*   By: gvirga <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/02/25 23:24:51 by gvirga            #+#    #+#             */
-/*   Updated: 2019/03/19 05:21:23 by gvirga           ###   ########.fr       */
+/*   Updated: 2019/03/19 05:25:41 by gvirga           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ int		draw_line(t_data **mai, size_t cur_x, size_t cur_y)
 	while (cur_pix < end)
 	{
 		if (cur_pix > WIDTH * HEIGHT)
-			((*mai)->mlx_data->img_add)[cur_pix * cur_y] = 0x0000FF;
+			((*mai)->mlx_data->img_add)[cur_pix * cur_y] = 0x000FFF;
 		cur_pix++;
 	}
 	return (1);
