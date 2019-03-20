@@ -6,7 +6,7 @@
 #    By: gvirga <marvin@42.fr>                      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2018/06/12 23:31:55 by gvirga            #+#    #+#              #
-#    Updated: 2019/03/19 02:57:46 by gvirga           ###   ########.fr        #
+#    Updated: 2019/03/20 06:26:46 by gvirga           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -20,7 +20,7 @@ SRCDIR=srcs/
 CC =gcc
 CFLAGS =-Wall -Werror -Wextra -g
 MAIN =main.c
-FILES =errors_read.c read_and_fill.c errors_mlx.c
+FILES =errors_read.c read_and_fill.c errors_mlx.c draw_map.c bres_alg.c
 SRCFILES =$(addprefix $(SRCDIR), $(FILES))
 OBJ=$(subst .c,.o, $(FILES)) main.o
 SRCOBJ =$(addprefix $(SRCDIR), $(OBJ))

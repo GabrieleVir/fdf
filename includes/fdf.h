@@ -6,10 +6,9 @@
 /*   By: gvirga <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/02/27 07:09:57 by gvirga            #+#    #+#             */
-/*   Updated: 2019/03/19 03:08:28 by gvirga           ###   ########.fr       */
+/*   Updated: 2019/03/20 06:53:24 by gvirga           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-
 
 #ifndef FDF_H
 # define FDF_H
@@ -35,7 +34,7 @@ typedef struct				s_mlx
 	void					*mlx_win;
 	int						*mlx_img;
 	int						*img_add;
-
+	int						add_p;
 }							t_mlx;
 
 typedef struct				s_data
@@ -47,17 +46,52 @@ typedef struct				s_data
 	intmax_t				*z_arr;
 	size_t					dst_x;
 	size_t					dst_y;
-	size_t					pos;
+	size_t					i;
 	t_mlx					*mlx_data;
 }							t_data;
 
-int				starting_with_the_basics();
-int				error_msg(int error);
-int				read_file(t_data **maps_info, char *file_name);
-int				usage_error_msg();
-int				length_error_msg();
-int				errors_mlx(char *fct_name_error, int frees, t_mlx **m_i);
-int				error_file_msg(int error, t_data **maps_info);
-int				error_empty_file(t_data **maps_info);
+typedef struct				s_bres
+{
+	int						width;
+	int						height;
+	int						x1;
+	int						x2;
+	int						y1;
+	int						y2;
+	int						dx1;
+	int						dx2;
+	int						dy1;
+	int						dy2;
+	int						long_dst;
+	int						shrt_dst;
+	int						numerator;
+}							t_bres;
+
+/*
+** mlx functions
+*/
+int							starting_with_the_basics();
+/*
+** read file functions
+*/
+int							read_file(t_data **maps_info, char *file_name);
+/*
+** errors functions
+*/
+int							error_msg(int error);
+int							usage_error_msg();
+int							length_error_msg();
+int							errors_mlx(char *fct_name_error, int frees,
+							t_mlx **m_i);
+int							error_file_msg(int error, t_data **maps_info);
+int							error_empty_file(t_data **maps_info);
+/*
+** Map drawing functions
+*/
+int							draw_map(t_data **mai, t_mlx **m_i);
+/*
+** Bresenham algo functions
+*/
+void						draw_line(t_data **mai, t_bres *data);
 
 #endif
