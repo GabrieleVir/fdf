@@ -6,7 +6,7 @@
 /*   By: gvirga <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/02/27 07:09:57 by gvirga            #+#    #+#             */
-/*   Updated: 2019/03/20 06:53:24 by gvirga           ###   ########.fr       */
+/*   Updated: 2019/03/22 05:02:22 by gvirga           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@ typedef struct				s_data
 	size_t					nb_row;
 	size_t					nb_of_elems;
 	char					*data;
-	intmax_t				*z_arr;
+	intmax_t				*trans_map;
 	size_t					dst_x;
 	size_t					dst_y;
 	size_t					i;

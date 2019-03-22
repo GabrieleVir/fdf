@@ -1,22 +1,35 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   test.c                                             :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: gvirga <marvin@42.fr>                      +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2019/03/20 06:30:57 by gvirga            #+#    #+#             */
-/*   Updated: 2019/03/20 06:32:39 by gvirga           ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
-#include <stdlib.h>
-#include <stdio.h>
-
-int			main(int ac, char **av)
+int		trans_map(t_map **maps, int width, int height)
 {
-	int		x = atoi(av[1]);
-	printf("%d\n", x / 2);
-	printf("%d\n", x >> 1);
-	return (0);
+	int		i;
+	int		lines;
+	int		columns;
+	int		x;
+	int		y;
+	int		z;
+	int		dz;
+
+	dz = (*maps)->highest_point - (*maps)->lowest_point;
+	lines = (*maps)->lines;
+	columns = (*maps)->columns;
+	i = -1;
+	if (((*maps)->distance_x = width / (columns * 4)) < 10)
+		(*maps)->distance_x = 5;
+	if (((*maps)->distance_y = height / (lines * 4)) < 10)
+		(*maps)->distance_y = 5;
+	if (((*maps)->highest_point + (*maps)->lowest_point) > (*maps)->distance_y)
+		(*maps)->distance_z = 5;
+	else
+		(*maps)->distance_z = 10;
+	if (!((*maps)->trans_map = (int*)malloc(sizeof(int) * lines * columns * 3)))
+		return (error_management("trans_map", "malloc"));
+	while (++i < lines * columns)
+	{
+		x = i % columns * (*maps)->distance_x;
+		y = i / columns * (*maps)->distance_y;
+		z = (*maps)->default_map[i] * (*maps)->distance_z;
+		(*maps)->trans_map[i * 3] = x * cos(0.523599) - y * cos(0.523599);
+		(*maps)->trans_map[i * 3 + 1] = x * sin(0.523599) + y * sin(0.523599) - z;
+		(*maps)->trans_map[i * 3 + 2] = z;
+	}
+	return (1);
 }

@@ -6,7 +6,7 @@
 /*   By: gvirga <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/07 16:21:44 by gvirga            #+#    #+#             */
-/*   Updated: 2019/03/19 03:00:16 by gvirga           ###   ########.fr       */
+/*   Updated: 2019/03/22 05:53:52 by gvirga           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ int		length_error_msg(char ***tmp_map, t_data **maps_info)
 		i++;
 	}
 	free(*tmp_map);
-	free((*maps_info)->z_arr);
+	free((*maps_info)->trans_map);
 	ft_putstr("Found wrong line length. Exiting\n");
 	return (0);
 }

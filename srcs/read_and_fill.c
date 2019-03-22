@@ -6,7 +6,7 @@
 /*   By: gvirga <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/07 16:23:15 by gvirga            #+#    #+#             */
-/*   Updated: 2019/03/19 03:30:04 by gvirga           ###   ########.fr       */
+/*   Updated: 2019/03/22 05:55:07 by gvirga           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,12 +23,31 @@ static int		fill_z_arr(t_data **m_i, char *row, size_t i)
 			row++;
 		if (*row == '\0')
 			break ;
-		((*m_i)->z_arr)[u] = ft_atoi(row);
+		((*m_i)->trans_map)[u * 3 + 2] = ft_atoi(row);
 		u++;
 		while (*row && *row != ' ')
 			row++;
 	}
 	return (1);
+}
+
+static void		trans_map(t_data **mai)
+{
+	size_t	i;
+	int		x;
+	int		y;
+	int		z;
+
+	i = -1;
+	while (++i < (*mai)->nb_row * (*mai)->nb_column)
+	{
+		x = i % (*mai)->nb_column * (*mai)->dst_x;
+		y = i / (*mai)->nb_column * (*mai)->dst_y;
+		z = (*mai)->trans_map[i * 3 + 2] * 10;
+		(*mai)->trans_map[i * 3] = x * cos(0.523599) - y * cos(0.523599);
+		(*mai)->trans_map[i * 3 + 1] = x * sin(0.523599) + y * sin(0.523599)
+			- z;
+	}
 }
 
 static void		garbage_collector(char **data, char ***tmp_map, size_t nb_r)
@@ -57,8 +76,8 @@ static int		fill_info(t_data **maps_info)
 		return (error_file_msg(12, maps_info));
 	(*maps_info)->nb_column = ft_wordcount(tmp_map[0], ' ');
 	(*maps_info)->nb_of_elems = (*maps_info)->nb_row * (*maps_info)->nb_column;
-	if (!((*maps_info)->z_arr = (intmax_t *)malloc(sizeof(intmax_t) *
-			(*maps_info)->nb_of_elems)))
+	if (!((*maps_info)->trans_map = (intmax_t *)malloc(sizeof(intmax_t) *
+			(*maps_info)->nb_of_elems * 3)))
 		return (error_file_msg(12, maps_info));
 	while (i < (*maps_info)->nb_row)
 	{
@@ -67,6 +86,7 @@ static int		fill_info(t_data **maps_info)
 		fill_z_arr(maps_info, tmp_map[i], i);
 		i++;
 	}
+	trans_map(maps_info);
 	garbage_collector(&((*maps_info)->data), &tmp_map, (*maps_info)->nb_row);
 	return (1);
 }
