@@ -6,7 +6,7 @@
 /*   By: gvirga <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/02/25 23:24:51 by gvirga            #+#    #+#             */
-/*   Updated: 2019/03/20 06:22:59 by gvirga           ###   ########.fr       */
+/*   Updated: 2019/04/08 19:24:49 by gvirga           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,17 @@ int		mlx_starting(t_mlx **m_i)
 		return (errors_mlx("mlx_new_window()", 1, m_i));
 	return (1);
 }
+int		maps_info_malloc(t_data **maps_info)
+{
+	if (!((*maps_info) = (t_data *)malloc(sizeof(t_data))))
+		return (error_msg(12));
+	if (!((*maps_info)->mlx_data = (t_mlx *)malloc(sizeof(t_mlx))))
+	{
+		free(*maps_info);
+		return (error_msg(12));
+	}
+	return (1);
+}
 
 int		main(int ac, char **av)
 {
@@ -28,8 +39,8 @@ int		main(int ac, char **av)
 
 	if (ac == 1)
 		return (usage_error_msg());
-	maps_info = (t_data *)malloc(sizeof(t_data));
-	maps_info->mlx_data = (t_mlx *)malloc(sizeof(t_mlx));
+	if (maps_info_malloc(&maps_info))
+		return (0);
 	if (read_file(&maps_info, av[1]) && mlx_starting(&(maps_info->mlx_data)))
 	{
 		if (!(draw_map(&maps_info, &(maps_info->mlx_data))))
@@ -37,6 +48,7 @@ int		main(int ac, char **av)
 	}
 	else
 		return (-1);
+	options_fdf(&maps_info, &(maps_info->mlx_data));
 	mlx_loop(maps_info->mlx_data->mlx_ptr);
 	return (0);
 }

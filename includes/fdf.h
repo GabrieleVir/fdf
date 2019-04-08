@@ -6,7 +6,7 @@
 /*   By: gvirga <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/02/27 07:09:57 by gvirga            #+#    #+#             */
-/*   Updated: 2019/04/08 18:07:42 by gvirga           ###   ########.fr       */
+/*   Updated: 2019/04/08 19:27:06 by gvirga           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,10 +69,16 @@ typedef struct				s_bres
 	int						numerator;
 }							t_bres;
 
+typedef struct				s_params
+{
+	t_data					*data;
+}							t_params;
+
 /*
 ** mlx functions
 */
 int							starting_with_the_basics();
+int							mlx_create_image(t_mlx **m_i);
 /*
 ** read file functions
 */
@@ -95,5 +101,10 @@ int							draw_map(t_data **mai, t_mlx **m_i);
 ** Bresenham algo functions
 */
 void						draw_line(t_data **mai, t_bres *data);
+
+/*
+** Options for fdf
+*/
+void						options_fdf(t_data **mi, t_mlx **mlx);
 
 #endif

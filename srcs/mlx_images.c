@@ -1,27 +1,23 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   errors_mlx.c                                       :+:      :+:    :+:   */
+/*   mlx_images.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: gvirga <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2019/03/15 01:49:05 by gvirga            #+#    #+#             */
-/*   Updated: 2019/04/08 19:30:53 by gvirga           ###   ########.fr       */
+/*   Created: 2019/04/08 19:03:04 by gvirga            #+#    #+#             */
+/*   Updated: 2019/04/08 19:30:47 by gvirga           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-/*
-** Errors when I manage the mlx functions
-*/
 #include "fdf.h"
 
-int			errors_mlx(char *fct_name_error, int frees, t_mlx **m_i)
+int		mlx_create_image(t_mlx **m_i)
 {
-	if (frees == 1)
-		free((*m_i)->mlx_ptr);
-	ft_putstr("Error: ");
-	ft_putstr("The function ");
-	ft_putstr(fct_name_error);
-	ft_putstr(" didn't succeed\n");
-	return (0);
+	if (!((*m_i)->mlx_img = mlx_new_image((*m_i)->mlx_ptr, WIDTH, HEIGHT)))
+		return (errors_mlx("mlx_new_image()", 0, m_i));
+	if (!((*m_i)->img_add = (int*)mlx_get_data_addr((*m_i)->mlx_img,
+			&((*m_i)->add_p), &((*m_i)->add_p), &((*m_i)->add_p))))
+		return (errors_mlx("mlx_get_data_addr()", 0, m_i));
+	return (1);
 }

@@ -6,7 +6,7 @@
 /*   By: gvirga <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/20 06:14:17 by gvirga            #+#    #+#             */
-/*   Updated: 2019/04/08 15:44:02 by gvirga           ###   ########.fr       */
+/*   Updated: 2019/04/08 19:27:33 by gvirga           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,9 +40,7 @@ int				draw_map(t_data **mai, t_mlx **m_i)
 	t_bres		data;
 
 	(*mai)->i = 0;
-	(*m_i)->mlx_img = mlx_new_image((*m_i)->mlx_ptr, WIDTH, HEIGHT);
-	(*m_i)->img_add = (int*)mlx_get_data_addr((*m_i)->mlx_img,
-			&((*m_i)->add_p), &((*m_i)->add_p), &((*m_i)->add_p));
+	mlx_create_image(m_i);
 	while ((*mai)->i < (*mai)->nb_of_elems)
 	{
 		if (((*mai)->i + 1) % (*mai)->nb_column != 0)
