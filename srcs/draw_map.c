@@ -6,7 +6,7 @@
 /*   By: gvirga <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/20 06:14:17 by gvirga            #+#    #+#             */
-/*   Updated: 2019/03/22 05:54:49 by gvirga           ###   ########.fr       */
+/*   Updated: 2019/04/08 15:44:02 by gvirga           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,17 +35,10 @@ static void		prepare_data_bres(t_bres *data, int x_or_y, t_data **mai)
 	}
 }
 
-static void		calculate_dst_two_points(t_data **mai)
-{
-	(*mai)->dst_x = (WIDTH / 2) / (*mai)->nb_column;
-	(*mai)->dst_y = (HEIGHT / 2) / (*mai)->nb_row;
-}
-
 int				draw_map(t_data **mai, t_mlx **m_i)
 {
 	t_bres		data;
 
-	calculate_dst_two_points(mai);
 	(*mai)->i = 0;
 	(*m_i)->mlx_img = mlx_new_image((*m_i)->mlx_ptr, WIDTH, HEIGHT);
 	(*m_i)->img_add = (int*)mlx_get_data_addr((*m_i)->mlx_img,

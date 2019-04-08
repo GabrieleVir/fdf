@@ -6,7 +6,7 @@
 /*   By: gvirga <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/07 16:23:15 by gvirga            #+#    #+#             */
-/*   Updated: 2019/03/22 05:55:07 by gvirga           ###   ########.fr       */
+/*   Updated: 2019/04/08 18:11:08 by gvirga           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@ static int		fill_z_arr(t_data **m_i, char *row, size_t i)
 	size_t		u;
 
 	u = 0 + (i * (*m_i)->nb_column);
+	(*m_i)->biggest_z = 1;
 	while (*row)
 	{
 		while (*row == ' ')
@@ -24,6 +25,14 @@ static int		fill_z_arr(t_data **m_i, char *row, size_t i)
 		if (*row == '\0')
 			break ;
 		((*m_i)->trans_map)[u * 3 + 2] = ft_atoi(row);
+		if (((*m_i)->trans_map)[u * 3 + 2] < 0)
+		{
+			if (labs(((*m_i)->trans_map)[u * 3 + 2]) > (*m_i)->biggest_z)
+				(*m_i)->biggest_z = labs(((*m_i)->trans_map)[u * 3 + 2]);
+		}
+		else
+			if (((*m_i)->trans_map)[u * 3 + 2] > (*m_i)->biggest_z)
+				(*m_i)->biggest_z = ((*m_i)->trans_map)[u * 3 + 2];
 		u++;
 		while (*row && *row != ' ')
 			row++;
@@ -38,15 +47,26 @@ static void		trans_map(t_data **mai)
 	int		y;
 	int		z;
 
-	i = -1;
-	while (++i < (*mai)->nb_row * (*mai)->nb_column)
+	i = 0;
+	(*mai)->dst_x = (WIDTH / 2) / (*mai)->nb_column;
+	(*mai)->dst_y = (HEIGHT / 2) / (*mai)->nb_row;
+	(*mai)->dst_z = (HEIGHT / 200 / (*mai)->biggest_z);
+	if ((*mai)->dst_z == 0)
+		(*mai)->dst_z = 1;
+	while (i < (*mai)->nb_row * (*mai)->nb_column)
 	{
 		x = i % (*mai)->nb_column * (*mai)->dst_x;
-		y = i / (*mai)->nb_column * (*mai)->dst_y;
-		z = (*mai)->trans_map[i * 3 + 2] * 10;
-		(*mai)->trans_map[i * 3] = x * cos(0.523599) - y * cos(0.523599);
+		y = (i / (*mai)->nb_column) * (*mai)->dst_y;
+		z = (*mai)->trans_map[i * 3 + 2] * (*mai)->dst_z;
+		(*mai)->trans_map[i * 3] = x * cos(0.523599) - y * cos(0.523599) +
+			750;
 		(*mai)->trans_map[i * 3 + 1] = x * sin(0.523599) + y * sin(0.523599)
-			- z;
+			- z + 250;
+		/* Perspective 
+		(*mai)->trans_map[i * 3] = x + 750;
+		(*mai)->trans_map[i * 3 + 1] = y/2 - z + 250;
+		*/
+		i++;
 	}
 }
 

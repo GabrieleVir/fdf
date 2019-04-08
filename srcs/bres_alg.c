@@ -6,7 +6,7 @@
 /*   By: gvirga <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/20 06:18:16 by gvirga            #+#    #+#             */
-/*   Updated: 2019/03/22 04:57:38 by gvirga           ###   ########.fr       */
+/*   Updated: 2019/04/08 17:52:54 by gvirga           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,12 +14,9 @@
 
 static void		set_dst(t_bres *data)
 {
-	if ((*data).width > (*data).height)
-	{
-		(*data).long_dst = labs((*data).width);
-		(*data).shrt_dst = labs((*data).height);
-	}
-	else
+	(*data).long_dst = labs((*data).width);
+	(*data).shrt_dst = labs((*data).height);
+	if ((*data).long_dst < (*data).shrt_dst)
 	{
 		(*data).long_dst = labs((*data).height);
 		(*data).shrt_dst = labs((*data).width);
@@ -63,12 +60,6 @@ static void		trace_line(t_data **mai, t_bres *data)
 	i = -1;
 	curr_x = (*data).x1;
 	curr_y = (*data).y1;
-	if ((*mai)->i >= 39)
-	{
-		printf("x1: %d x2: %d\n", curr_x, (*data).x2);
-		printf("y1: %d y2: %d\n", curr_y, (*data).y2);
-		printf("POS: %lu\n", (*mai)->i);
-	}
 	while (++i <= (*data).long_dst)
 	{
 		pixel_pos = curr_y * WIDTH + curr_x;
