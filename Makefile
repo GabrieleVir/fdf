@@ -6,12 +6,12 @@
 #    By: gvirga <marvin@42.fr>                      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2018/06/12 23:31:55 by gvirga            #+#    #+#              #
-#    Updated: 2018/11/18 03:05:08 by gvirga           ###   ########.fr        #
+#    Updated: 2019/04/08 18:14:28 by gvirga           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 CC=gcc
-CFLAGS=-I./includes -Wall -Werror -Wextra
+CFLAGS=-I./includes 
 FILES= main.c 
 FRAMEWORK=-framework AppKit -framework OpenGl
 LDIR=lib/
