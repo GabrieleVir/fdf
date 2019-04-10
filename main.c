@@ -6,7 +6,7 @@
 /*   By: gvirga <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/02/25 23:24:51 by gvirga            #+#    #+#             */
-/*   Updated: 2019/04/08 19:24:49 by gvirga           ###   ########.fr       */
+/*   Updated: 2019/04/10 03:35:29 by gvirga           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ int		main(int ac, char **av)
 
 	if (ac == 1)
 		return (usage_error_msg());
-	if (maps_info_malloc(&maps_info))
+	if (!(maps_info_malloc(&maps_info)))
 		return (0);
 	if (read_file(&maps_info, av[1]) && mlx_starting(&(maps_info->mlx_data)))
 	{

@@ -6,7 +6,7 @@
 /*   By: gvirga <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/20 06:18:16 by gvirga            #+#    #+#             */
-/*   Updated: 2019/04/08 17:52:54 by gvirga           ###   ########.fr       */
+/*   Updated: 2019/04/10 04:54:36 by gvirga           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,6 +50,21 @@ static void		set_deltas(t_bres *data)
 		(*data).dy1 = 1;
 }
 
+static void		num_check(t_bres *data, int *curr_x, int *curr_y)
+{
+	if ((*data).numerator >= (*data).long_dst)
+	{
+		(*data).numerator -= (*data).long_dst;
+		(*curr_x) += (*data).dx1;
+		(*curr_y) += (*data).dy1;
+	}
+	else
+	{
+		(*curr_x) += (*data).dx2;
+		(*curr_y) += (*data).dy2;
+	}
+}
+
 static void		trace_line(t_data **mai, t_bres *data)
 {
 	int			i;
@@ -67,17 +82,7 @@ static void		trace_line(t_data **mai, t_bres *data)
 		WIDTH && curr_x > 0 && curr_y > 0 && curr_y < HEIGHT)
 			((*mai)->mlx_data->img_add)[pixel_pos] = 0x0000FF;
 		(*data).numerator += (*data).shrt_dst;
-		if ((*data).numerator >= (*data).long_dst)
-		{
-			(*data).numerator -= (*data).long_dst;
-			curr_x += (*data).dx1;
-			curr_y += (*data).dy1;
-		}
-		else
-		{
-			curr_x += (*data).dx2;
-			curr_y += (*data).dy2;
-		}
+		num_check(data, &curr_x, &curr_y);
 	}
 }
 

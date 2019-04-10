@@ -6,7 +6,7 @@
 /*   By: gvirga <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/02/27 07:09:57 by gvirga            #+#    #+#             */
-/*   Updated: 2019/04/08 19:27:06 by gvirga           ###   ########.fr       */
+/*   Updated: 2019/04/10 04:50:14 by gvirga           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,6 +83,7 @@ int							mlx_create_image(t_mlx **m_i);
 ** read file functions
 */
 int							read_file(t_data **maps_info, char *file_name);
+void						trans_map(t_data **mai);
 /*
 ** errors functions
 */
@@ -106,5 +107,7 @@ void						draw_line(t_data **mai, t_bres *data);
 ** Options for fdf
 */
 void						options_fdf(t_data **mi, t_mlx **mlx);
+int							change_height(int key, int x, int y, t_data **mi);
+int							deal_key(int key, t_data **mi);
 
 #endif
