@@ -6,7 +6,7 @@
 /*   By: gvirga <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/10 04:49:11 by gvirga            #+#    #+#             */
-/*   Updated: 2019/04/10 04:51:37 by gvirga           ###   ########.fr       */
+/*   Updated: 2019/04/11 03:07:09 by gvirga           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,26 +29,31 @@ static void		set_dst_map(t_data **mai)
 	(*mai)->dst_z = (HEIGHT / 200 / (*mai)->biggest_z);
 	if ((*mai)->dst_z == 0)
 		(*mai)->dst_z = 1;
+	(*mai)->pad_x = 750;
+	(*mai)->pad_y = 250;
 }
 
-void			trans_map(t_data **mai)
+void			trans_map(t_data **mai, int first_prog_launch)
 {
-	size_t	i;
 	int		x;
 	int		y;
 	int		z;
 
-	i = 0;
-	set_dst_map(mai);
-	while (i < (*mai)->nb_row * (*mai)->nb_column)
+	(*mai)->i = 0;
+	if (first_prog_launch)
 	{
-		x = i % (*mai)->nb_column * (*mai)->dst_x;
-		y = (i / (*mai)->nb_column) * (*mai)->dst_y;
-		z = (*mai)->trans_map[i * 3 + 2] * (*mai)->dst_z;
-		(*mai)->trans_map[i * 3] = x * cos(0.523599) - y * cos(0.523599) +
-			750;
-		(*mai)->trans_map[i * 3 + 1] = x * sin(0.523599) + y * sin(0.523599)
-			- z + 250;
-		i++;
+		set_dst_map(mai);
+		(*mai)->zoom = 1;
+	}
+	while ((*mai)->i < (*mai)->nb_of_elems)
+	{
+		x = (*mai)->i % (*mai)->nb_column * (*mai)->dst_x;
+		y = ((*mai)->i / (*mai)->nb_column) * (*mai)->dst_y;
+		z = (*mai)->trans_map[(*mai)->i * 3 + 2] * (*mai)->dst_z;
+		(*mai)->trans_map[(*mai)->i * 3] = x * cos(0.523599) -
+			y * cos(0.523599) + (*mai)->pad_x;
+		(*mai)->trans_map[(*mai)->i * 3 + 1] = x * sin(0.523599) +
+			y * sin(0.523599) - z + (*mai)->pad_y;
+		((*mai)->i)++;
 	}
 }

@@ -6,7 +6,7 @@
 /*   By: gvirga <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/02/27 07:09:57 by gvirga            #+#    #+#             */
-/*   Updated: 2019/04/10 04:50:14 by gvirga           ###   ########.fr       */
+/*   Updated: 2019/04/11 03:05:51 by gvirga           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,6 +48,9 @@ typedef struct				s_data
 	size_t					dst_x;
 	size_t					dst_y;
 	size_t					dst_z;
+	intmax_t				pad_x;
+	intmax_t				pad_y;
+	double					zoom;
 	size_t					i;
 	t_mlx					*mlx_data;
 }							t_data;
@@ -83,7 +86,7 @@ int							mlx_create_image(t_mlx **m_i);
 ** read file functions
 */
 int							read_file(t_data **maps_info, char *file_name);
-void						trans_map(t_data **mai);
+void						trans_map(t_data **mai, int first_prog_launch);
 /*
 ** errors functions
 */
@@ -102,7 +105,6 @@ int							draw_map(t_data **mai, t_mlx **m_i);
 ** Bresenham algo functions
 */
 void						draw_line(t_data **mai, t_bres *data);
-
 /*
 ** Options for fdf
 */

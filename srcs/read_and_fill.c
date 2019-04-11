@@ -6,7 +6,7 @@
 /*   By: gvirga <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/07 16:23:15 by gvirga            #+#    #+#             */
-/*   Updated: 2019/04/10 04:49:42 by gvirga           ###   ########.fr       */
+/*   Updated: 2019/04/11 00:37:28 by gvirga           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,7 +78,7 @@ static int		fill_info(t_data **maps_info)
 		fill_z_arr(maps_info, tmp_map[i], i);
 		i++;
 	}
-	trans_map(maps_info);
+	trans_map(maps_info, 1);
 	garbage_collector(&((*maps_info)->data), &tmp_map, (*maps_info)->nb_row);
 	return (1);
 }
