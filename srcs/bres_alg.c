@@ -6,7 +6,7 @@
 /*   By: gvirga <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/20 06:18:16 by gvirga            #+#    #+#             */
-/*   Updated: 2019/04/12 03:52:20 by gvirga           ###   ########.fr       */
+/*   Updated: 2019/04/12 05:48:27 by gvirga           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,30 +64,25 @@ static void		num_check(t_bres *data, int *curr_x, int *curr_y)
 		(*curr_y) += (*data).dy2;
 	}
 }
-/*
-		get_percentage();
-		get_light();
-		get_color();
-*/
+
 static void		trace_line(t_data **mai, t_bres *data)
 {
 	int			i;
-	int			curr_x;
-	int			curr_y;
+	t_current	coords;
 	intmax_t	pixel_pos;
 
 	i = -1;
-	curr_x = (*data).x1;
-	curr_y = (*data).y1;
+	coords.curr_x = (*data).x1;
+	coords.curr_y = (*data).y1;
 	while (++i <= (*data).long_dst)
 	{
-		pixel_pos = curr_y * WIDTH + curr_x;
-		if ((pixel_pos >= 0 && pixel_pos < WIDTH * HEIGHT) && curr_x <
-		WIDTH && curr_x > 0 && curr_y > 0 && curr_y < HEIGHT)
+		pixel_pos = coords.curr_y * WIDTH + coords.curr_x;
+		if ((pixel_pos >= 0 && pixel_pos < WIDTH * HEIGHT) && coords.curr_x <
+		WIDTH && coords.curr_x > 0 && coords.curr_y > 0 && coords.curr_y < HEIGHT)
 			((*mai)->mlx_data->img_add)[pixel_pos] = ((*mai)->force_color == 1)
-				? 0x000001 : (*data).start_color;
+				? 0x000001 : get_color(coords, data);
 		(*data).numerator += (*data).shrt_dst;
-		num_check(data, &curr_x, &curr_y);
+		num_check(data, &(coords.curr_x), &(coords.curr_y));
 	}
 }
 

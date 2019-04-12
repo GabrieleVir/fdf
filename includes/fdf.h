@@ -6,7 +6,7 @@
 /*   By: gvirga <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/02/27 07:09:57 by gvirga            #+#    #+#             */
-/*   Updated: 2019/04/12 03:39:51 by gvirga           ###   ########.fr       */
+/*   Updated: 2019/04/12 05:44:37 by gvirga           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,6 +87,12 @@ typedef struct				s_params
 	t_data					*data;
 }							t_params;
 
+typedef struct				s_current
+{
+	int						curr_x;
+	int						curr_y;
+}							t_current;
+
 /*
 ** mlx functions
 */
@@ -115,6 +121,10 @@ int							draw_map(t_data **mai, t_mlx **m_i);
 ** Bresenham algo functions
 */
 void						draw_line(t_data **mai, t_bres *data);
+/*
+** Linear gradient
+*/
+int							get_color(t_current current, t_bres *data);
 /*
 ** Options for fdf
 */
