@@ -6,7 +6,7 @@
 /*   By: gvirga <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/02/27 07:09:57 by gvirga            #+#    #+#             */
-/*   Updated: 2019/04/12 05:44:37 by gvirga           ###   ########.fr       */
+/*   Updated: 2019/04/12 06:07:08 by gvirga           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,6 +103,7 @@ int							mlx_create_image(t_mlx **m_i);
 */
 int							read_file(t_data **maps_info, char *file_name);
 void						trans_map(t_data **mai, int first_prog_launch);
+int							fill_z_arr(t_data **m_i, char *row, size_t i);
 /*
 ** errors functions
 */

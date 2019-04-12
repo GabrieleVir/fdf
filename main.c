@@ -6,7 +6,7 @@
 /*   By: gvirga <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/02/25 23:24:51 by gvirga            #+#    #+#             */
-/*   Updated: 2019/04/10 03:35:29 by gvirga           ###   ########.fr       */
+/*   Updated: 2019/04/12 05:55:41 by gvirga           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@ int		mlx_starting(t_mlx **m_i)
 		return (errors_mlx("mlx_new_window()", 1, m_i));
 	return (1);
 }
+
 int		maps_info_malloc(t_data **maps_info)
 {
 	if (!((*maps_info) = (t_data *)malloc(sizeof(t_data))))

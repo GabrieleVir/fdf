@@ -6,7 +6,7 @@
 /*   By: gvirga <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/10 04:39:56 by gvirga            #+#    #+#             */
-/*   Updated: 2019/04/12 05:17:57 by gvirga           ###   ########.fr       */
+/*   Updated: 2019/04/12 06:02:56 by gvirga           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,31 +15,22 @@
 static void	move_trans_map(t_data **map, int direction)
 {
 	size_t		i;
+	int			padding_value;
 
 	i = -1;
-	if (direction == 0)
+	if (direction == 0 || direction == 1)
 	{
-		(*map)->pad_x -= 100;
+		padding_value = (direction == 0) ? -100 : 100;
+		(*map)->pad_x += padding_value;
 		while (++i < (*map)->nb_of_elems)
-			(*map)->trans_map[i * 3] -= 100;
+			(*map)->trans_map[i * 3] += padding_value;
 	}
-	else if (direction == 2)
+	else if (direction == 2 || direction == 3)
 	{
-		(*map)->pad_y += 100;
+		padding_value = (direction == 2) ? 100 : -100;
+		(*map)->pad_y += padding_value;
 		while (++i < (*map)->nb_of_elems)
-			(*map)->trans_map[i * 3 + 1] += 100;
-	}
-	else if (direction == 1)
-	{
-		(*map)->pad_x += 100;
-		while (++i < (*map)->nb_of_elems)
-			(*map)->trans_map[i * 3] += 100;
-	}
-	else
-	{
-		(*map)->pad_y -= 100;
-		while (++i < (*map)->nb_of_elems)
-			(*map)->trans_map[i * 3 + 1] -= 100;
+			(*map)->trans_map[i * 3 + 1] += padding_value;
 	}
 }
 

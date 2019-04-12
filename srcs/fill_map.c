@@ -6,7 +6,7 @@
 /*   By: gvirga <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/10 04:49:11 by gvirga            #+#    #+#             */
-/*   Updated: 2019/04/12 05:53:36 by gvirga           ###   ########.fr       */
+/*   Updated: 2019/04/12 06:09:36 by gvirga           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,4 +56,47 @@ void			trans_map(t_data **mai, int first_prog_launch)
 			y * sin(0.523599) - z + (*mai)->pad_y;
 		((*mai)->i)++;
 	}
+}
+
+/*
+** coming from read_and_fill.c but, filling z_arr
+*/
+
+static void		set_z_values(t_data **m_i, int u)
+{
+	if (((*m_i)->trans_map)[u * 3 + 2] < 0)
+	{
+		if (labs(((*m_i)->trans_map)[u * 3 + 2]) > (*m_i)->biggest_z)
+			(*m_i)->biggest_z = labs(((*m_i)->trans_map)[u * 3 + 2]);
+	}
+	else
+	{
+		if (((*m_i)->trans_map)[u * 3 + 2] > (*m_i)->biggest_z)
+			(*m_i)->biggest_z = ((*m_i)->trans_map)[u * 3 + 2];
+	}
+	if ((*m_i)->trans_map[u * 3 + 2] < (*m_i)->lowest_z)
+		(*m_i)->lowest_z = (*m_i)->trans_map[u * 3 + 2];
+	if ((*m_i)->trans_map[u * 3 + 2] > (*m_i)->highest_z)
+		(*m_i)->highest_z = (*m_i)->trans_map[u * 3 + 2];
+}
+
+int				fill_z_arr(t_data **m_i, char *row, size_t i)
+{
+	size_t		u;
+
+	u = 0 + (i * (*m_i)->nb_column);
+	while (*row)
+	{
+		while (*row == ' ')
+			row++;
+		if (*row == '\0')
+			break ;
+		((*m_i)->trans_map)[u * 3 + 2] = ft_atoi(row);
+		set_z_values(m_i, u);
+		u++;
+		while (*row && *row != ' ')
+			row++;
+	}
+	(*m_i)->dist_low_and_high_z = (*m_i)->highest_z + labs((*m_i)->lowest_z);
+	return (1);
 }
