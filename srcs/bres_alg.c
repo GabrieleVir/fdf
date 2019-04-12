@@ -6,7 +6,7 @@
 /*   By: gvirga <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/20 06:18:16 by gvirga            #+#    #+#             */
-/*   Updated: 2019/04/12 05:48:27 by gvirga           ###   ########.fr       */
+/*   Updated: 2019/04/12 05:52:39 by gvirga           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,8 +77,9 @@ static void		trace_line(t_data **mai, t_bres *data)
 	while (++i <= (*data).long_dst)
 	{
 		pixel_pos = coords.curr_y * WIDTH + coords.curr_x;
-		if ((pixel_pos >= 0 && pixel_pos < WIDTH * HEIGHT) && coords.curr_x <
-		WIDTH && coords.curr_x > 0 && coords.curr_y > 0 && coords.curr_y < HEIGHT)
+		if ((pixel_pos >= 0 && pixel_pos < WIDTH * HEIGHT) &&
+		coords.curr_x < WIDTH && coords.curr_x > 0 && coords.curr_y > 0 &&
+		coords.curr_y < HEIGHT)
 			((*mai)->mlx_data->img_add)[pixel_pos] = ((*mai)->force_color == 1)
 				? 0x000001 : get_color(coords, data);
 		(*data).numerator += (*data).shrt_dst;

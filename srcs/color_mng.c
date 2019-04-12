@@ -6,7 +6,7 @@
 /*   By: gvirga <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/12 05:18:18 by gvirga            #+#    #+#             */
-/*   Updated: 2019/04/12 05:44:50 by gvirga           ###   ########.fr       */
+/*   Updated: 2019/04/12 05:54:25 by gvirga           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,11 +40,11 @@ int				get_color(t_current current, t_bres *data)
 		percentage = percent((*data).x1, (*data).x2, current.curr_x);
 	else
 		percentage = percent((*data).y1, (*data).y2, current.curr_y);
-   red = get_light(((*data).start_color >> 16) & 0xFF,
-		   ((*data).end_color >> 16) & 0xFF, percentage);
-   green = get_light(((*data).start_color >> 8) & 0xFF,
-		   ((*data).end_color >> 8) & 0xFF, percentage);
-   blue = get_light((*data).start_color & 0xFF,
-		   (*data).end_color & 0xFF, percentage);
+	red = get_light(((*data).start_color >> 16) & 0xFF,
+		((*data).end_color >> 16) & 0xFF, percentage);
+	green = get_light(((*data).start_color >> 8) & 0xFF,
+		((*data).end_color >> 8) & 0xFF, percentage);
+	blue = get_light((*data).start_color & 0xFF,
+		(*data).end_color & 0xFF, percentage);
 	return ((red << 16) | (green << 8) | blue);
 }
