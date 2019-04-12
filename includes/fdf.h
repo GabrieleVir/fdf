@@ -6,7 +6,7 @@
 /*   By: gvirga <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/02/27 07:09:57 by gvirga            #+#    #+#             */
-/*   Updated: 2019/04/12 02:14:09 by gvirga           ###   ########.fr       */
+/*   Updated: 2019/04/12 03:39:51 by gvirga           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,6 +49,7 @@ typedef struct				s_data
 	intmax_t				dist_low_and_high_z;
 	int						highest_color;
 	int						lowest_color;
+	int						force_color;
 	intmax_t				*trans_map;
 	size_t					dst_x;
 	size_t					dst_y;
@@ -120,5 +121,7 @@ void						draw_line(t_data **mai, t_bres *data);
 void						options_fdf(t_data **mi, t_mlx **mlx);
 int							change_height(int key, int x, int y, t_data **mi);
 int							deal_key(int key, t_data **mi);
+void						black_and_white(t_data **mi);
+void						change_img_add(t_data **mai);
 
 #endif

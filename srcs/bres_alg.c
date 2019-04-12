@@ -6,7 +6,7 @@
 /*   By: gvirga <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/20 06:18:16 by gvirga            #+#    #+#             */
-/*   Updated: 2019/04/12 02:32:47 by gvirga           ###   ########.fr       */
+/*   Updated: 2019/04/12 03:52:20 by gvirga           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,7 +84,8 @@ static void		trace_line(t_data **mai, t_bres *data)
 		pixel_pos = curr_y * WIDTH + curr_x;
 		if ((pixel_pos >= 0 && pixel_pos < WIDTH * HEIGHT) && curr_x <
 		WIDTH && curr_x > 0 && curr_y > 0 && curr_y < HEIGHT)
-			((*mai)->mlx_data->img_add)[pixel_pos] = (*data).start_color;
+			((*mai)->mlx_data->img_add)[pixel_pos] = ((*mai)->force_color == 1)
+				? 0x000001 : (*data).start_color;
 		(*data).numerator += (*data).shrt_dst;
 		num_check(data, &curr_x, &curr_y);
 	}
@@ -92,6 +93,8 @@ static void		trace_line(t_data **mai, t_bres *data)
 
 void			draw_line(t_data **mai, t_bres *data)
 {
+	if ((*mai)->force_color)
+		change_img_add(mai);
 	set_deltas(data);
 	set_dst(data);
 	trace_line(mai, data);

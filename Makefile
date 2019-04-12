@@ -6,7 +6,7 @@
 #    By: gvirga <marvin@42.fr>                      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2018/06/12 23:31:55 by gvirga            #+#    #+#              #
-#    Updated: 2019/04/11 03:11:19 by gvirga           ###   ########.fr        #
+#    Updated: 2019/04/12 03:41:09 by gvirga           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -22,7 +22,8 @@ CC =gcc
 CFLAGS =-Wall -Werror -Wextra -g -O3
 MAIN =main.c
 FILES =errors_read.c read_and_fill.c errors_mlx.c draw_map.c bres_alg.c \
-options.c mlx_images.c keyboard_options.c height_option.c fill_map.c
+options.c mlx_images.c keyboard_options.c height_option.c fill_map.c \
+black_and_white.c
 SRCFILES =$(addprefix $(SRCDIR), $(FILES))
 OBJ=$(subst .c,.o, $(FILES)) main.o
 SRCOBJ =$(addprefix $(SRCDIR), $(OBJ))
