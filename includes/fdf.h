@@ -6,13 +6,13 @@
 /*   By: gvirga <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/02/27 07:09:57 by gvirga            #+#    #+#             */
-/*   Updated: 2019/04/11 03:05:51 by gvirga           ###   ########.fr       */
+/*   Updated: 2019/04/12 02:14:09 by gvirga           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef FDF_H
 # define FDF_H
-# define BUFF_SIZE 1000
+# define BUFF_SIZE 100000
 # define WIDTH 1920
 # define HEIGHT 1080
 
@@ -44,6 +44,11 @@ typedef struct				s_data
 	size_t					nb_of_elems;
 	char					*data;
 	intmax_t				biggest_z;
+	intmax_t				highest_z;
+	intmax_t				lowest_z;
+	intmax_t				dist_low_and_high_z;
+	int						highest_color;
+	int						lowest_color;
 	intmax_t				*trans_map;
 	size_t					dst_x;
 	size_t					dst_y;
@@ -63,6 +68,8 @@ typedef struct				s_bres
 	int						x2;
 	int						y1;
 	int						y2;
+	intmax_t				z1;
+	intmax_t				z2;
 	int						dx1;
 	int						dx2;
 	int						dy1;
@@ -70,6 +77,8 @@ typedef struct				s_bres
 	int						long_dst;
 	int						shrt_dst;
 	int						numerator;
+	int						end_color;
+	int						start_color;
 }							t_bres;
 
 typedef struct				s_params

@@ -6,12 +6,13 @@
 #    By: gvirga <marvin@42.fr>                      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2018/06/12 23:31:55 by gvirga            #+#    #+#              #
-#    Updated: 2019/04/11 00:42:52 by gvirga           ###   ########.fr        #
+#    Updated: 2019/04/11 03:11:19 by gvirga           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME =fdf
 
+HEADER_FILES =fdf.h
 LIBFT_DIR =libft/
 LIBS =libft.a libmlx.a
 LIBSDIR=libs/

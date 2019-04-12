@@ -6,11 +6,29 @@
 /*   By: gvirga <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/07 16:23:15 by gvirga            #+#    #+#             */
-/*   Updated: 2019/04/11 00:37:28 by gvirga           ###   ########.fr       */
+/*   Updated: 2019/04/12 02:20:17 by gvirga           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "fdf.h"
+
+static void		set_z_values(t_data **m_i, int u)
+{
+	if (((*m_i)->trans_map)[u * 3 + 2] < 0)
+	{
+		if (labs(((*m_i)->trans_map)[u * 3 + 2]) > (*m_i)->biggest_z)
+			(*m_i)->biggest_z = labs(((*m_i)->trans_map)[u * 3 + 2]);
+	}
+	else
+	{
+		if (((*m_i)->trans_map)[u * 3 + 2] > (*m_i)->biggest_z)
+			(*m_i)->biggest_z = ((*m_i)->trans_map)[u * 3 + 2];
+	}
+	if ((*m_i)->trans_map[u * 3 + 2] < (*m_i)->lowest_z)
+		(*m_i)->lowest_z = (*m_i)->trans_map[u * 3 + 2];
+	if ((*m_i)->trans_map[u * 3 + 2] > (*m_i)->highest_z)
+		(*m_i)->highest_z = (*m_i)->trans_map[u * 3 + 2];
+}
 
 static int		fill_z_arr(t_data **m_i, char *row, size_t i)
 {
@@ -24,20 +42,12 @@ static int		fill_z_arr(t_data **m_i, char *row, size_t i)
 		if (*row == '\0')
 			break ;
 		((*m_i)->trans_map)[u * 3 + 2] = ft_atoi(row);
-		if (((*m_i)->trans_map)[u * 3 + 2] < 0)
-		{
-			if (labs(((*m_i)->trans_map)[u * 3 + 2]) > (*m_i)->biggest_z)
-				(*m_i)->biggest_z = labs(((*m_i)->trans_map)[u * 3 + 2]);
-		}
-		else
-		{
-			if (((*m_i)->trans_map)[u * 3 + 2] > (*m_i)->biggest_z)
-				(*m_i)->biggest_z = ((*m_i)->trans_map)[u * 3 + 2];
-		}
+		set_z_values(m_i, u);
 		u++;
 		while (*row && *row != ' ')
 			row++;
 	}
+	(*m_i)->dist_low_and_high_z = (*m_i)->highest_z + labs((*m_i)->lowest_z);
 	return (1);
 }
 
@@ -70,6 +80,10 @@ static int		fill_info(t_data **maps_info)
 	if (!((*maps_info)->trans_map = (intmax_t *)malloc(sizeof(intmax_t) *
 			(*maps_info)->nb_of_elems * 3)))
 		return (error_file_msg(12, maps_info));
+	(*maps_info)->lowest_z = 0;
+	(*maps_info)->highest_z = 0;
+	(*maps_info)->highest_color = 0xFF0000;
+	(*maps_info)->lowest_color = 0x0000FF;
 	while (i < (*maps_info)->nb_row)
 	{
 		if ((*maps_info)->nb_column != ft_wordcount(tmp_map[i], ' '))

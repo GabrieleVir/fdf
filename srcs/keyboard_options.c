@@ -6,7 +6,7 @@
 /*   By: gvirga <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/10 04:39:56 by gvirga            #+#    #+#             */
-/*   Updated: 2019/04/11 03:03:37 by gvirga           ###   ########.fr       */
+/*   Updated: 2019/04/11 03:13:13 by gvirga           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,9 +45,18 @@ static void	move_trans_map(t_data **map, int direction)
 
 static void	zoom_up(t_data **map)
 {
-	(*map)->dst_x += 10;
-	(*map)->dst_y += 10;
-	trans_map(map, 0);
+	if ((*map)->dst_x > 10 && (*map)->dst_y > 10)
+	{
+		(*map)->dst_x += 10;
+		(*map)->dst_y += 10;
+		trans_map(map, 0);
+	}
+	else
+	{
+		(*map)->dst_x += 1;
+		(*map)->dst_y += 1;
+		trans_map(map, 0);
+	}
 }
 
 static int	zoom(t_data **map, int zoom)
@@ -61,6 +70,12 @@ static int	zoom(t_data **map, int zoom)
 		{
 			(*map)->dst_x -= 10;
 			(*map)->dst_y -= 10;
+			trans_map(map, 0);
+		}
+		else if ((*map)->dst_x > 1 && (*map)->dst_y > 1)
+		{
+			(*map)->dst_x -= 1;
+			(*map)->dst_y -= 1;
 			trans_map(map, 0);
 		}
 		else

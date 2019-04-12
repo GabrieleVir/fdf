@@ -6,7 +6,7 @@
 /*   By: gvirga <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/20 06:18:16 by gvirga            #+#    #+#             */
-/*   Updated: 2019/04/10 04:54:36 by gvirga           ###   ########.fr       */
+/*   Updated: 2019/04/12 02:32:47 by gvirga           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,7 +64,11 @@ static void		num_check(t_bres *data, int *curr_x, int *curr_y)
 		(*curr_y) += (*data).dy2;
 	}
 }
-
+/*
+		get_percentage();
+		get_light();
+		get_color();
+*/
 static void		trace_line(t_data **mai, t_bres *data)
 {
 	int			i;
@@ -80,7 +84,7 @@ static void		trace_line(t_data **mai, t_bres *data)
 		pixel_pos = curr_y * WIDTH + curr_x;
 		if ((pixel_pos >= 0 && pixel_pos < WIDTH * HEIGHT) && curr_x <
 		WIDTH && curr_x > 0 && curr_y > 0 && curr_y < HEIGHT)
-			((*mai)->mlx_data->img_add)[pixel_pos] = 0x0000FF;
+			((*mai)->mlx_data->img_add)[pixel_pos] = (*data).start_color;
 		(*data).numerator += (*data).shrt_dst;
 		num_check(data, &curr_x, &curr_y);
 	}

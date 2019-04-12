@@ -6,7 +6,7 @@
 /*   By: gvirga <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/20 06:14:17 by gvirga            #+#    #+#             */
-/*   Updated: 2019/04/08 19:27:33 by gvirga           ###   ########.fr       */
+/*   Updated: 2019/04/12 02:40:33 by gvirga           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,27 @@
 ** 1 for the next point in x and 2 for next point in y
 */
 
+static int		check_part(intmax_t highest_z, intmax_t z)
+{
+	int		i;
+
+	i = -1;
+	while (++i < 8)
+	{
+		if (labs(z) >= (((8 - i) * highest_z) / 8))
+			return (i + 1);
+	}
+	return (9);
+}
+
+static void		set_colors(t_bres *data, t_data **mai)
+{
+	(*data).start_color = (*mai)->highest_color /
+		check_part((*mai)->highest_z, (*data).z1);
+	(*data).end_color = (*mai)->highest_color /
+		check_part((*mai)->highest_z, (*data).z2);
+}
+
 static void		prepare_data_bres(t_bres *data, int x_or_y, t_data **mai)
 {
 	if (x_or_y == 1)
@@ -24,6 +45,9 @@ static void		prepare_data_bres(t_bres *data, int x_or_y, t_data **mai)
 		(*data).x2 = (*mai)->trans_map[((*mai)->i + 1) * 3];
 		(*data).y1 = (*mai)->trans_map[(*mai)->i * 3 + 1];
 		(*data).y2 = (*mai)->trans_map[((*mai)->i + 1) * 3 + 1];
+		(*data).z1 = (*mai)->trans_map[(*mai)->i * 3 + 2];
+		(*data).z2 = (*mai)->trans_map[((*mai)->i + 1) * 3 + 2];
+		set_colors(data, mai);
 	}
 	else
 	{
@@ -32,6 +56,9 @@ static void		prepare_data_bres(t_bres *data, int x_or_y, t_data **mai)
 		(*data).y1 = (*mai)->trans_map[(*mai)->i * 3 + 1];
 		(*data).y2 = (*mai)->trans_map[
 			((*mai)->i + (*mai)->nb_column) * 3 + 1];
+		(*data).z1 = (*mai)->trans_map[(*mai)->i * 3 + 2];
+		(*data).z2 = (*mai)->trans_map[((*mai)->i + (*mai)->nb_column) * 3 + 2];
+		set_colors(data, mai);
 	}
 }
 
