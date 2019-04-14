@@ -6,7 +6,7 @@
 /*   By: gvirga <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/07 16:23:15 by gvirga            #+#    #+#             */
-/*   Updated: 2019/04/12 06:08:45 by gvirga           ###   ########.fr       */
+/*   Updated: 2019/04/12 06:33:36 by gvirga           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,10 +29,8 @@ static void		garbage_collector(char **data, char ***tmp_map, size_t nb_r)
 
 static void		set_z_for_color(t_data **maps_info)
 {
-	(*maps_info)->lowest_z = 0;
 	(*maps_info)->highest_z = 0;
 	(*maps_info)->highest_color = 0xFF0000;
-	(*maps_info)->lowest_color = 0x0000FF;
 }
 
 static int		fill_info(t_data **maps_info)
@@ -58,7 +56,8 @@ static int		fill_info(t_data **maps_info)
 		fill_z_arr(maps_info, tmp_map[i], i);
 		i++;
 	}
-	trans_map(maps_info, 1);
+	(*maps_info)->projection = 0;
+	trans_map(maps_info, 1, (*maps_info)->projection);
 	garbage_collector(&((*maps_info)->data), &tmp_map, (*maps_info)->nb_row);
 	return (1);
 }

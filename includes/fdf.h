@@ -6,7 +6,7 @@
 /*   By: gvirga <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/02/27 07:09:57 by gvirga            #+#    #+#             */
-/*   Updated: 2019/04/12 06:07:08 by gvirga           ###   ########.fr       */
+/*   Updated: 2019/04/12 06:33:34 by gvirga           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,16 +39,15 @@ typedef struct				s_mlx
 
 typedef struct				s_data
 {
+	
 	size_t					nb_column;
 	size_t					nb_row;
 	size_t					nb_of_elems;
 	char					*data;
 	intmax_t				biggest_z;
 	intmax_t				highest_z;
-	intmax_t				lowest_z;
-	intmax_t				dist_low_and_high_z;
+	int						projection;
 	int						highest_color;
-	int						lowest_color;
 	int						force_color;
 	intmax_t				*trans_map;
 	size_t					dst_x;
@@ -56,7 +55,6 @@ typedef struct				s_data
 	size_t					dst_z;
 	intmax_t				pad_x;
 	intmax_t				pad_y;
-	double					zoom;
 	size_t					i;
 	t_mlx					*mlx_data;
 }							t_data;
@@ -102,7 +100,8 @@ int							mlx_create_image(t_mlx **m_i);
 ** read file functions
 */
 int							read_file(t_data **maps_info, char *file_name);
-void						trans_map(t_data **mai, int first_prog_launch);
+void						trans_map(t_data **mai, int first_prog_launch,
+										int projection);
 int							fill_z_arr(t_data **m_i, char *row, size_t i);
 /*
 ** errors functions
@@ -128,11 +127,28 @@ void						draw_line(t_data **mai, t_bres *data);
 int							get_color(t_current current, t_bres *data);
 /*
 ** Options for fdf
+** ============================================================================
 */
 void						options_fdf(t_data **mi, t_mlx **mlx);
+/*
+** Scroll
+*/
 int							change_height(int key, int x, int y, t_data **mi);
+/*
+** Arrows map movement and zooms
+*/
 int							deal_key(int key, t_data **mi);
+/*
+** Black and white
+*/
 void						black_and_white(t_data **mi);
 void						change_img_add(t_data **mai);
-
+/*
+** Rotations and Perspective change
+*/
+void						change_perspective(t_data **mi);
+void						choosing_projection(t_data **mai, int projection);
+/*
+** ============================================================================
+*/
 #endif
