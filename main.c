@@ -6,7 +6,7 @@
 /*   By: gvirga <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/02/25 23:24:51 by gvirga            #+#    #+#             */
-/*   Updated: 2019/04/12 05:55:41 by gvirga           ###   ########.fr       */
+/*   Updated: 2019/04/15 01:17:24 by gvirga           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ int		main(int ac, char **av)
 {
 	t_data		*maps_info;
 
-	if (ac == 1)
+	if (ac != 2)
 		return (usage_error_msg());
 	if (!(maps_info_malloc(&maps_info)))
 		return (0);
